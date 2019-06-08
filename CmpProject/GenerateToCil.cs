@@ -92,9 +92,9 @@ namespace CmpProject
             }
             else
             {
-                //El nombre metodo en el tipo tiene siempre esta estructura (Type_CoolName)
+                // El nombre metodo en el tipo tiene siempre esta estructura (Type_CoolName)
                 function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}_{parserRule.idText}");
-                //Como toda fucion pertenece a una clase se le agrega self como una parametro
+                // Como toda fucion pertenece a una clase se le agrega self como una parametro
                 var self = new ArgCil("self");
                 function.ArgCils.Add(self);
                 contextCil.Define("self");
@@ -137,20 +137,12 @@ namespace CmpProject
                     return Visit(rule, cilTree, contextCil);
                 case CompaExprContext rule:
                     return Visit(rule, cilTree, contextCil);
-                    
-                //case PlusRestExprContext rule:
-                //    Visit(rule,context);
-                //    break;
-                //case MultDivExprContext rule:
-                //    Visit(rule,context);
-                //    break;
                 case ArithContext rule:
                     return Visit(rule, cilTree, contextCil);
                 case IsvoidExprContext rule:
                     return Visit(rule, cilTree, contextCil);
                 case NegExprContext rule:
                     return Visit(rule, cilTree, contextCil);
-
                 case InParenthesisExprContext rule:
                     return Visit(rule, cilTree, contextCil);
                 case IdExprContext rule:
@@ -202,17 +194,16 @@ namespace CmpProject
                return  VisitString(parserRule, cilTree, contextCil);
             }
             var Params = new List<IHolderCil>();
-            var expr0 = Visit(parserRule.expresion, cilTree,contextCil);
-            
+            var expr0 = Visit(parserRule.expresion, cilTree,contextCil);   
             foreach (var expr in parserRule._expresions)
             {
                 //genera el codigo de cada parametro que le paso a los metodos
                 var param = Visit(expr, cilTree,contextCil);
                 Params.Add(param);
             }
-
             //Averiguo el tipo dinamico de self es decir( el de la clase que esta usando la funcion en ese momento)
             var varType = new LocalCil($"_Type{cilTree.ThreeDirInses.Count}");
+            
             if (parserRule.type==null)
             {
                 cilTree.LocalCils.Add(varType);
@@ -269,16 +260,15 @@ namespace CmpProject
             cilTree.ThreeDirInses.Add(new Label(labelEnd));
             //retorno el valor
             return value;
-
         }
         public IHolderCil Visit(NewTypeExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
-
             var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(value);
             if (parserRule.type.Text=="SELF_TYPE")
             {
                 var varType = new LocalCil($"_Type{cilTree.ThreeDirInses.Count}");
+                cilTree.LocalCils.Add(varType);
                 cilTree.ThreeDirInses.Add(new TypeOf(varType, new ValuelCil("self")));
                 cilTree.ThreeDirInses.Add(new VCallCil(value,varType,new ValuelCil("Init")));
             }
@@ -287,7 +277,6 @@ namespace CmpProject
                 var varType= CilAst.GetTypeCilByName(parserRule.type.Text);
                 cilTree.ThreeDirInses.Add(new CallCil(value,varType.Init.Function));
             }
-            
             return value;
         }
         public IHolderCil Visit(AssignExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -449,7 +438,6 @@ namespace CmpProject
             cilTree.ThreeDirInses.Add(new Label(whileElse));
             var condValue = Visit(parserRule.whileExpr, cilTree,contextCil);
             cilTree.ThreeDirInses.Add(new IfGoto(condValue, loop));
-           
             //retorno el valor
             return value;
         }

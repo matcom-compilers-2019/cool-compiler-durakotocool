@@ -17,14 +17,15 @@ namespace CmpProject
         {
             //var streamReader = new StreamReader("Testing/Tipos.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Dispatch.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Expresion Case.cool").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Bool.cool").ReadToEnd();
-            var streamReader = new StreamReader("Testing/Nuevo tipo.cl").ReadToEnd();
+            //var streamReader = new StreamReader("Testing/Expresion Case.cl").ReadToEnd();
+            //var streamReader = new StreamReader("Testing/Bool.cl").ReadToEnd();
+            //var streamReader = new StreamReader("Testing/Nuevo tipo.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Comparaciones.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/String.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Expresion let.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Factorial.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Tipos.cl").ReadToEnd();
+            var streamReader = new StreamReader("Testing/ZAHUIS.cl").ReadToEnd();
             var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader));
             var tokens = new CommonTokenStream(MyLexer);
             var MyParser = new COOLgrammarParser(tokens);
@@ -46,14 +47,14 @@ namespace CmpProject
                 //var generateCil = new GenerateToCilOptimization(CheckSemantic, generateCilFeatures);
                 generateCil.Visit(program);
                 Console.WriteLine(generateCil.CilAst);
-                var generateMips = new CilToMips(generateCil);
-                var mips = generateMips.Visit(program);
-                Console.WriteLine(".data");
-                mips.Data.ForEach(x => Console.WriteLine(x));
-                Console.WriteLine(".text");
-                mips.Text.ForEach(x => Console.WriteLine(x));
-                Console.WriteLine("-----functions-----");
-                mips.Functions.ForEach(x => Console.WriteLine(x));
+                //var generateMips = new CilToMips(generateCil);
+                //var mips = generateMips.Visit(program);
+                //Console.WriteLine(".data");
+                //mips.Data.ForEach(x => Console.WriteLine(x));
+                //Console.WriteLine(".text");
+                //mips.Text.ForEach(x => Console.WriteLine(x));
+                //Console.WriteLine("-----functions-----");
+                //mips.Functions.ForEach(x => Console.WriteLine(x));
 
             }
             foreach (var item in CheckSemantic.errorLogger.msgs)

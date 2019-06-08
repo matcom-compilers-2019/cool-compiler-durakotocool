@@ -886,12 +886,22 @@ namespace CmpProject.CIL
         public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
         {
             string returnedValue;
-            if (X is ValuelCil)
+
+            if (function.LocalCils.Contains(X)) //si y es una variable local
+            {
+                var index = function.localsDict[X.Name];
+                returnedValue = $"lw $v0, {index}($sp)";
+            }
+            else if (function.ArgCils.Contains(X))
+            {   //si y es un parametro
+                var index = function.ArgCils.ToList().FindIndex(i => i.Name.Equals(X.Name));
+                returnedValue =$"mov $v0, $a{index}";
+            }
+            else if (X is ValuelCil)
                 returnedValue = $"lw $v0, {X.Name}";   
-            else if(X is null)
-                returnedValue = $"li $v0, 0";
             else
-                returnedValue = $"lw $v0, {function.localsDict[X.Name]}($sp)";
+                returnedValue = $"li $v0, 0";
+
             var lines = new List<string>(){
                     $"lw $ra, {function.LocalCils.Count*4}", //Carga Ra que lo habia guardado en la pila
                     $"addi $sp, $sp {(function.LocalCils.Count + 1) * 4}", // Setea el SP donde estaba anteriormente

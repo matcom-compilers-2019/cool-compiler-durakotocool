@@ -57,6 +57,7 @@ namespace CmpProject.CIL
         ISet<IArgCil> ArgCils { get; set; }
         ISet<ILocalCil> LocalCils { get; set; }
         ISet<IThreeDirIns> ThreeDirInses { get; set; }
+        Dictionary<string, int> localsDict { get; set; }
         IVarCil self { get; }
     }
     public interface IArgCil:IVarCil

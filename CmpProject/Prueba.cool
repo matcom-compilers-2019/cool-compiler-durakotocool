@@ -1,0 +1,9 @@
+class A
+{
+  a:Int<-2
+  sum(p1:Int,p2:Int):Int{ p1+p2 }; 
+};
+class B inherits A
+{
+   b:Int<-3 
+};

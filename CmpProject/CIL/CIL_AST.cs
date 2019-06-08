@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -308,14 +308,15 @@ namespace CmpProject.CIL
             return $"    method {Name} : {Function.Name} ;\n";
         }
     }
-    #endregion
-    #region Function
+#endregion
+#region Function
     class FunctionCil : FeuturesCil, IFunctionCil
     {
         public ISet<IArgCil> ArgCils { get; set; }
         public ISet<ILocalCil> LocalCils { get; set; }
         public ISet<IThreeDirIns> ThreeDirInses { get; set; }
         public Dictionary<string, int> localsDict { get; set; }
+        public IVarCil self => ArgCils.SingleOrDefault(t=>t.Name=="self")?? (IVarCil)LocalCils.Single(t => t.Name == "self");
 
         //Por ahora no hago un constructor de argCILs o localCILs
         public FunctionCil(string TypeName, string CilName) :base(TypeName,CilName)
@@ -356,7 +357,7 @@ namespace CmpProject.CIL
             return Name;
         }
     }
-    #endregion
+#endregion
 #region ThreeDirIns
 
     public abstract class ThreeDirIns : IThreeDirIns
@@ -634,7 +635,7 @@ namespace CmpProject.CIL
         }
         public override string ToString()
         {
-                return $"   {X}=GETATTR {Y.Name} {Z.Name}\n";
+            return $"   {X}=GETATTR {Y.Name} {Z.Name}\n";
         }
     }
     //X(objeto) Y(atributo) y Z(valor)

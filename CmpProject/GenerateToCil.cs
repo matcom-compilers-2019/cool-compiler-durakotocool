@@ -177,7 +177,7 @@ namespace CmpProject
             //Averiguo el tipo dinamico de self es decir( el de la clase que esta usando la funcion en ese momento)
             var varType = new LocalCil($"_Type{cilTree.ThreeDirInses.Count}");
             cilTree.LocalCils.Add(varType);
-            var self = cilTree.ArgCils.SingleOrDefault(t => t.Name == "self");
+            var self = cilTree.self;
             cilTree.ThreeDirInses.Add(new TypeOf(varType, self));
             //cada parametro los anado al metodo puede que tenga sentido pasarlos al revez
             cilTree.ThreeDirInses.Add(new ArgExprCil(self));
@@ -287,46 +287,7 @@ namespace CmpProject
                 var varType= CilAst.GetTypeCilByName(parserRule.type.Text);
                 cilTree.ThreeDirInses.Add(new CallCil(value,varType.Init.Function));
             }
-            //var typeCil = CilAst.GetTypeCilByName(parserRule.type.Text);
-            //cilTree.ThreeDirInses.Add(new Allocate(value, typeCil));
-            //var typeCool = GlobalContext.GetType(parserRule.type.Text);
-            //foreach (var typeTemp in typeCool.Hierachty)
-            //{
-            //    foreach (var attributeTemp in typeTemp.Attributes)
-            //    {
-            //        //Inicializamos los atributos
-            //        if (attributeTemp.initializacion!=null)
-            //        {
-            //            var valueAttribute=Visit(attributeTemp.initializacion, cilTree,contextCil);
-            //            //No siempre los tipos de Cil estan para eso eso habria que hacer 2 pasadas al AST
-            //            cilTree.ThreeDirInses.Add(new SetAttrCil(value,typeCil.GetAttributeCilsByCoolName(attributeTemp.ID),valueAttribute));
-            //        }
-            //        else
-            //        {
-            //            if (attributeTemp.Type==GlobalContext.Int)
-            //            {
-            //                cilTree.ThreeDirInses.Add(new SetAttrCil(value, typeCil.GetAttributeCilsByCoolName(attributeTemp.ID), new ValuelCil("0")));
-            //            }
-            //            else if (attributeTemp.Type == GlobalContext.Bool)
-            //            {
-            //                //Puede que para los bool invente un tipo
-            //                cilTree.ThreeDirInses.Add(new SetAttrCil(value, typeCil.GetAttributeCilsByCoolName(attributeTemp.ID), new ValuelCil("0")));
-            //            }
-            //            else if (attributeTemp.Type == GlobalContext.String)
-            //            {
-            //                var valueS = new LocalCil($"_value{cilTree.LocalCils.Count}");
-            //                cilTree.LocalCils.Add(valueS);
-            //                var stringCool = "";
-            //                var varDataString = new VarCil($"s{CilAst.dataStringCils.Count}");
-            //                CilAst.dataStringCils.Add(new DataStringCil(varDataString, new StringCil(stringCool)));
-            //                cilTree.ThreeDirInses.Add(new LoadCil(valueS, varDataString));
-            //                cilTree.ThreeDirInses.Add(new SetAttrCil(value, typeCil.GetAttributeCilsByCoolName(attributeTemp.ID), valueS));
-            //            }
-            //        }
-
-
-            //    }
-            //}
+            
             return value;
         }
         public IHolderCil Visit(AssignExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -336,7 +297,7 @@ namespace CmpProject
             {
                 var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
                 cilTree.LocalCils.Add(value);
-                cilTree.ThreeDirInses.Add(new SetAttrCil(cilTree.ArgCils.SingleOrDefault(c => c.Name == "self"), typeCil.GetAttributeCilsByCoolName(parserRule.id.Text),valueExpr));
+                cilTree.ThreeDirInses.Add(new SetAttrCil(cilTree.self, typeCil.GetAttributeCilsByCoolName(parserRule.id.Text),valueExpr));
                 return value;
             }
             else
@@ -437,7 +398,7 @@ namespace CmpProject
             {
                 var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
                 cilTree.LocalCils.Add(value);
-                cilTree.ThreeDirInses.Add(new GetAttrCil(value,cilTree.ArgCils.SingleOrDefault(c=>c.Name=="self"),typeCil.GetAttributeCilsByCoolName(parserRule.id.Text)));
+                cilTree.ThreeDirInses.Add(new GetAttrCil(value,cilTree.self,typeCil.GetAttributeCilsByCoolName(parserRule.id.Text)));
                 return value;
             }
             return contextCil.variables[parserRule.id.Text];
@@ -658,11 +619,10 @@ namespace CmpProject
             }
             return value;
         }
-
         public void Visit()
         {
             IFunctionCil init = typeCil.Init.Function;
-            var value = new LocalCil($"_value{init.LocalCils.Count}");
+            var value = new LocalCil("self");
             init.LocalCils.Add(value);
             var typeCilNew = CilAst.GetTypeCilByName(typeCil.Name);
             init.ThreeDirInses.Add(new Allocate(value, typeCilNew));
@@ -681,13 +641,8 @@ namespace CmpProject
                     }
                     else
                     {
-                        if (attributeTemp.Type == GlobalContext.Int)
+                        if (attributeTemp.Type == GlobalContext.Int|| attributeTemp.Type == GlobalContext.Bool)
                         {
-                            init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), new ValuelCil("0")));
-                        }
-                        else if (attributeTemp.Type == GlobalContext.Bool)
-                        {
-                            //Puede que para los bool invente un tipo
                             init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), new ValuelCil("0")));
                         }
                         else if (attributeTemp.Type == GlobalContext.String)
@@ -701,8 +656,6 @@ namespace CmpProject
                             init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), valueS));
                         }
                     }
-
-
                 }
             }
             init.ThreeDirInses.Add(new ReturnCil(value));

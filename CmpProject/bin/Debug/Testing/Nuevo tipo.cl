@@ -1,11 +1,12 @@
-class Main{
-    main():String{
-        "Hola que hace"
-    };
+class Main
+{
+   main():String{
+     "Hola que hace"
+   };
 };
 class X inherits A{
    c:B<-new B;
-   d:Int<-2+3+b;
+   d:Int<-b;
 };
 class A
 {

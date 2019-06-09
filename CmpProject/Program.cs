@@ -48,14 +48,14 @@ namespace CmpProject
                 //var generateCil = new GenerateToCilOptimization(CheckSemantic, generateCilFeatures);
                 generateCil.Visit(program);
                 Console.WriteLine(generateCil.CilAst);
-                var generateMips = new CilToMips(generateCil);
-                var mips = generateMips.Visit(program);
-                Console.WriteLine(".data");
-                mips.Data.ForEach(x => Console.WriteLine(x));
-                Console.WriteLine(".text");
-                mips.Text.ForEach(x => Console.WriteLine(x));
-                Console.WriteLine("-----functions-----");
-                mips.Functions.ForEach(x => Console.WriteLine(x));
+                //var generateMips = new CilToMips(generateCil);
+                //var mips = generateMips.Visit(program);
+                //Console.WriteLine(".data");
+                //mips.Data.ForEach(x => Console.WriteLine(x));
+                //Console.WriteLine(".text");
+                //mips.Text.ForEach(x => Console.WriteLine(x));
+                //Console.WriteLine("-----functions-----");
+                //mips.Functions.ForEach(x => Console.WriteLine(x));
 
             }
             foreach (var item in CheckSemantic.errorLogger.msgs)

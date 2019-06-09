@@ -22,8 +22,8 @@ namespace CmpProject
         }
         public void Visit(ProgramContext parserRule)
         {
-            var temp = Preprocecing(parserRule._classes);
-            foreach (var _class in temp) {
+            parserRule._classes = Preprocecing(parserRule._classes);
+            foreach (var _class in parserRule._classes) {
                 Visit(_class);
             }
         }

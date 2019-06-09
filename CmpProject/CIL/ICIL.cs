@@ -17,6 +17,7 @@ namespace CmpProject.CIL
         ISet<IDataStringCil> dataStringCils { get; set; }
         ISet<IFunctionCil> FunctionCils { get; set; }
         ITypeCil GetTypeCilByName(string Name);
+        ITypeCil GetTypeCilByName(string Name, ITypeCil typeCil);
         //devuelve la funcion por su nombre
         IFunctionCil GetFunctionCilsByName(string Name);
         IFunctionCil CreateFunctionCil(string Name, string CilName);
@@ -51,6 +52,8 @@ namespace CmpProject.CIL
         //devuelve la funcion por su nombre original en cool
         IFunctionTypeCil GetFunctionCilsByCoolName(string CoolName);
         IAttributeCil GetAttributeCilsByCoolName(string CoolName);
+        int GetIndexAttributeCilsByCoolName(string CoolName);
+
     }
     public interface IFunctionCil:IFeuturesCil
     {

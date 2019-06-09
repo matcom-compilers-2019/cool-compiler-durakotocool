@@ -9,6 +9,7 @@ class X inherits A{
   algo():Object{
     sum(1,2)
   };
+  sum(p1:Int,p2:Int):Int{ p1+p2+1};
 };
 class A
 {

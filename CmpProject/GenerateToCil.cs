@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CmpProject.CIL;
+
 using static COOLgrammarParser;
 namespace CmpProject
 {
@@ -286,7 +287,8 @@ namespace CmpProject
             {
                 var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
                 cilTree.LocalCils.Add(value);
-                cilTree.ThreeDirInses.Add(new SetAttrCil(cilTree.self, typeCil.GetAttributeCilsByCoolName(parserRule.id.Text),valueExpr));
+                
+                cilTree.ThreeDirInses.Add(new SetAttrCil(cilTree.self, typeCil.GetAttributeCilsByCoolName(parserRule.id.Text), valueExpr));
                 return value;
             }
             else
@@ -385,6 +387,7 @@ namespace CmpProject
         public IHolderCil Visit(IdExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
             //Si no es una variable declarada dentro del metodo entonces es un atributo de la clase (self)
+          
             if (!contextCil.variables.ContainsKey(parserRule.id.Text))
             {
                 var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
@@ -392,6 +395,7 @@ namespace CmpProject
                 cilTree.ThreeDirInses.Add(new GetAttrCil(value,cilTree.self,typeCil.GetAttributeCilsByCoolName(parserRule.id.Text)));
                 return value;
             }
+            
             return contextCil.variables[parserRule.id.Text];
         }
         public IHolderCil Visit(IntegerExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -618,6 +622,7 @@ namespace CmpProject
             init.ThreeDirInses.Add(new Allocate(value, typeCilNew));
             var typeCool = GlobalContext.GetType(typeCil.Name);
             var contextCil = new ContextCil();
+            contextCil.Define("self");
             foreach (var typeTemp in typeCool.Hierachty)
             {
                 foreach (var attributeTemp in typeTemp.Attributes)

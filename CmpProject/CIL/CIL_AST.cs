@@ -272,7 +272,11 @@ namespace CmpProject.CIL
         {
             return Attributes.SingleOrDefault(t => t.CilName == CoolName);
         }
-        
+
+        public int GetIndexAttributeCilsByCoolName(string CoolName)
+        {
+            return Attributes.ToList().IndexOf(GetAttributeCilsByCoolName(CoolName));
+        }
     }
     abstract class FeuturesCil : VarCil,IFeuturesCil
     {
@@ -630,7 +634,7 @@ namespace CmpProject.CIL
     class GetAttrCil:BinaryVarCil
     {
         //public IVarCil Y { get; set; }
-        public GetAttrCil(IVarCil x, IVarCil y, IAttributeCil b) : base(x,y, b)
+        public GetAttrCil(IVarCil x, IVarCil y, IHolderCil b) : base(x,y, b)
         {
         }
         public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
@@ -645,7 +649,7 @@ namespace CmpProject.CIL
     //X(objeto) Y(atributo) y Z(valor)
     class SetAttrCil:BinaryVarCil
     {
-        public SetAttrCil(IVarCil x, IAttributeCil b ,IHolderCil y) : base(x, b,y)
+        public SetAttrCil(IVarCil x, IHolderCil b ,IHolderCil y) : base(x, b,y)
         {
         }
         public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)

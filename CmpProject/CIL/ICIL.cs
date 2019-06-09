@@ -52,6 +52,8 @@ namespace CmpProject.CIL
         //devuelve la funcion por su nombre original en cool
         IFunctionTypeCil GetFunctionCilsByCoolName(string CoolName);
         IAttributeCil GetAttributeCilsByCoolName(string CoolName);
+        int GetIndexAttributeCilsByCoolName(string CoolName);
+
     }
     public interface IFunctionCil:IFeuturesCil
     {

@@ -129,11 +129,16 @@ namespace CmpProject.CIL
             return $"{"TYPES."}\n{ Others.joinImplementation( TypeCils) } \n{"DATA."}\n{Others.joinImplementation(dataStringCils)}\n{"CODE."}\n{ Others.joinImplementation( FunctionCils)}";
         }
 
+        public ITypeCil GetTypeCilByName(string Name, ITypeCil typeCil)
+        {
+            if (Name == "SELF_TYPE")
+                return typeCil;
+            return TypeCils.SingleOrDefault(t => t.Name == Name);
+        }
         public ITypeCil GetTypeCilByName(string Name)
         {
             return TypeCils.SingleOrDefault(t => t.Name == Name);
         }
-
         public IFunctionCil GetFunctionCilsByName(string Name)
         {
             return FunctionCils.SingleOrDefault(t => t.Name == Name);
@@ -246,7 +251,6 @@ namespace CmpProject.CIL
                 Attributes.Add(attributeCil);
             }
         }
-
         public void AddFunc(IFunctionTypeCil functionCil)
         {
             var function = Functions.FirstOrDefault(a =>a.CilName == functionCil.CilName);
@@ -916,7 +920,7 @@ namespace CmpProject.CIL
         }
     }//
 #endregion
-#region String_funcions
+    #region String_funcions
     class LoadCil: UnaryCil
     {
 
@@ -989,29 +993,65 @@ namespace CmpProject.CIL
         }
     }
     #endregion
-#region IO
-    class ReadCil:ZyroCil
+    #region IO
+    class In_strCil:ZyroCil
     {
-        public ReadCil(VarCil x):base(x)
+        public In_strCil(IVarCil x):base(x)
         {
         }
         public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
         {
             return null;
+        }
+        public override string ToString()
+        {
+            return $"   {X}=in_str\n";
         }
     }
-    class PrintCil:ZyroCil
+    class In_intCil : ZyroCil
     {
-        public PrintCil(VarCil x):base(x)
+        public In_intCil(IVarCil x) : base(x)
         {
         }
         public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
         {
             return null;
+        }
+        public override string ToString()
+        {
+            return $"   {X}=in_int\n";
+        }
+    }
+    class Out_strCil:ZyroCil
+    {
+        public Out_strCil(IVarCil x):base(x)
+        {
+        }
+        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        {
+            return null;
+        }
+        public override string ToString()
+        {
+            return $"   out_str {X}\n";
+        }
+    }
+    class Out_intCil : ZyroCil
+    {
+        public Out_intCil(IVarCil x) : base(x)
+        {
+        }
+        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        {
+            return null;
+        }
+        public override string ToString()
+        {
+            return $"   out_int {X}\n";
         }
     }
     #endregion
-#region IsConform
+    #region IsConform
     //Esta expresion devuelve 1 si a<=b y 0 etc.
     class IsNotConformCil:BinaryVarCil
     {
@@ -1024,6 +1064,54 @@ namespace CmpProject.CIL
         public override string ToString()
         {
             return $"   {X}= ISNOTCONFORM {Y.Name} {Z.Name}\n";
+        }
+    }
+    #endregion
+    #region Halt
+    class Halt:ThreeDirIns
+    {
+        public Halt()
+        {
+        }
+        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        {
+            return null;
+        }
+        public override string ToString()
+        {
+            return $"   halt\n";
+        }
+    }
+    class Copy : UnaryCil
+    {
+        public Copy(IVarCil x, IHolderCil y) : base(x, y)
+        {
+
+        }
+
+        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        {
+            throw new NotImplementedException();
+        }
+        public override string ToString()
+        {
+            return $"   {X}= copy {Y}\n";
+        }
+    }
+    class Type_Name : UnaryCil
+    {
+        public Type_Name(IVarCil x, IHolderCil y) : base(x, y)
+        {
+
+        }
+
+        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        {
+            throw new NotImplementedException();
+        }
+        public override string ToString()
+        {
+            return $"   {X}= type_name {Y}\n";
         }
     }
     #endregion

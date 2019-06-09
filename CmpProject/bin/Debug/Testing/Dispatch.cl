@@ -35,3 +35,7 @@ class C inherits B
    pacata():Strint{type_name().concat("op")};
    tumba(a:A):Int{ b.sum(1,1) };
 };
+class U{
+
+  algo():SELF_TYPE{ copy()};
+};

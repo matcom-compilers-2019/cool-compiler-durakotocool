@@ -12,7 +12,6 @@ namespace CmpProject
     IVisitorCil<ClassContext>,
     IVisitorCil<FeatureContext>,
     IVisitorCilWhitContext<FormalContext,IFunctionCil>,
-    //IVisitorCil<MethodContext>,
     IVisitorCilWhitContext<ExprContext, IFunctionCil,IHolderCil>,
     IVisitorCilWhitContext<SelfDispatchContext, IFunctionCil,IHolderCil>,
     IVisitorCilWhitContext<DispatchContext, IFunctionCil,IHolderCil>,
@@ -154,7 +153,7 @@ namespace CmpProject
                 case BoolExprContext rule:
                     return Visit(rule, cilTree, contextCil);
                 default:
-                    return null;
+                    return Visit(cilTree);
             }
         }
         public virtual IHolderCil Visit(SelfDispatchContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -218,10 +217,11 @@ namespace CmpProject
             ////nueva variable donde se almacena el valor que retorna el metodo
             var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(value);
+            
             if (parserRule.type == null)
             {
                 //Se resuleve el tipo de la expr0 a partir de su tipo estatico calculado por el checkeo semantico
-                var typeExpr0 = CilAst.GetTypeCilByName(parserRule.expresion.computedType.Name);
+                var typeExpr0 = CilAst.GetTypeCilByName(parserRule.expresion.computedType.Name,typeCil);
                 ////resuelve el metodo en cil de ese tipo estatico
                 var functionCil = typeExpr0.GetFunctionCilsByCoolName(parserRule.id.Text);
                 cilTree.ThreeDirInses.Add(new VCallCil(value, varType, functionCil));
@@ -229,7 +229,7 @@ namespace CmpProject
             else
             {
                 //Se resuelve el tipo de la type
-                var typeT = CilAst.GetTypeCilByName(parserRule.type.Text);
+                var typeT = CilAst.GetTypeCilByName(parserRule.type.Text, typeCil);
                 var functionCil = typeT.GetFunctionCilsByCoolName(parserRule.id.Text);
                 cilTree.ThreeDirInses.Add(new VCallCil(value, typeT, functionCil));
             }
@@ -274,7 +274,7 @@ namespace CmpProject
             }
             else
             {
-                var varType= CilAst.GetTypeCilByName(parserRule.type.Text);
+                var varType= CilAst.GetTypeCilByName(parserRule.type.Text, typeCil);
                 cilTree.ThreeDirInses.Add(new CallCil(value,varType.Init.Function));
             }
             return value;
@@ -322,20 +322,22 @@ namespace CmpProject
         {
             var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(value);
-            var valueExpr = Visit(parserRule.expresion, cilTree,contextCil);
-            var labelElse = new LabelCil("else" + cilTree.ThreeDirInses.Count);
-            cilTree.ThreeDirInses.Add(new IfGoto(valueExpr, labelElse));
-            //Si es igual a 0 le asigno al resultado 1
-            cilTree.ThreeDirInses.Add(new AssigCil(value,new ValuelCil("1")));
-            var labelEnd = new LabelCil("end" + cilTree.ThreeDirInses.Count);
-            //Voy pa la etiqueta end
-            cilTree.ThreeDirInses.Add(new GotoCil(labelEnd));
-            //Pongo la etiqueta de else
-            cilTree.ThreeDirInses.Add(new Label(labelElse));
-            //Si es diferente a 0 le asigno al resultado 0
-            cilTree.ThreeDirInses.Add(new AssigCil(value, new ValuelCil("0")));
-            //Pongo la etiqueta end
-            cilTree.ThreeDirInses.Add(new Label(labelEnd));
+            var valueExpr = Visit(parserRule.expresion, cilTree, contextCil);
+            cilTree.ThreeDirInses.Add(new RestCil(value,new HolderCil("1"), valueExpr));
+            //var valueExpr = Visit(parserRule.expresion, cilTree,contextCil);
+            //var labelElse = new LabelCil("else" + cilTree.ThreeDirInses.Count);
+            //cilTree.ThreeDirInses.Add(new IfGoto(valueExpr, labelElse));
+            ////Si es igual a 0 le asigno al resultado 1
+            //cilTree.ThreeDirInses.Add(new AssigCil(value,new ValuelCil("1")));
+            //var labelEnd = new LabelCil("end" + cilTree.ThreeDirInses.Count);
+            ////Voy pa la etiqueta end
+            //cilTree.ThreeDirInses.Add(new GotoCil(labelEnd));
+            ////Pongo la etiqueta de else
+            //cilTree.ThreeDirInses.Add(new Label(labelElse));
+            ////Si es diferente a 0 le asigno al resultado 0
+            //cilTree.ThreeDirInses.Add(new AssigCil(value, new ValuelCil("0")));
+            ////Pongo la etiqueta end
+            //cilTree.ThreeDirInses.Add(new Label(labelEnd));
             return value;
         }
         public IHolderCil Visit(ArithContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -504,7 +506,7 @@ namespace CmpProject
             var isNotConform= new LocalCil($"_isNotConform{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(isNotConform);
             var nextLabel = new LabelCil($"Case_{cilTree.ThreeDirInses.Count + 5}");
-            var typeBranch = CilAst.GetTypeCilByName(parserRule.firstBranch.typeText);
+            var typeBranch = CilAst.GetTypeCilByName(parserRule.firstBranch.typeText, typeCil);
 
             //El tipo de la primera rama
             cilTree.ThreeDirInses.Add(new IsNotConformCil(isNotConform,typeExpr0,typeBranch));
@@ -520,7 +522,7 @@ namespace CmpProject
                 nextLabel = new LabelCil($"Case_{cilTree.ThreeDirInses.Count + 6}");
                 cilTree.ThreeDirInses.Add(new Label(Label));
                 //tipo de la rama
-                typeBranch = CilAst.GetTypeCilByName(branch.typeText);
+                typeBranch = CilAst.GetTypeCilByName(branch.typeText, typeCil);
                 cilTree.ThreeDirInses.Add(new IsNotConformCil(isNotConform, typeExpr0, typeBranch));
                 cilTree.ThreeDirInses.Add(new IfGoto(isNotConform, nextLabel));
                 cilTree.ThreeDirInses.Add(new IsNotConformCil(isNotConform, typeBranch,closestAncestor));
@@ -612,7 +614,7 @@ namespace CmpProject
             IFunctionCil init = typeCil.Init.Function;
             var value = new LocalCil("self");
             init.LocalCils.Add(value);
-            var typeCilNew = CilAst.GetTypeCilByName(typeCil.Name);
+            var typeCilNew = CilAst.GetTypeCilByName(typeCil.Name, typeCil);
             init.ThreeDirInses.Add(new Allocate(value, typeCilNew));
             var typeCool = GlobalContext.GetType(typeCil.Name);
             var contextCil = new ContextCil();
@@ -647,6 +649,44 @@ namespace CmpProject
                 }
             }
             init.ThreeDirInses.Add(new ReturnCil(value));
+        }
+
+        public IHolderCil Visit(IFunctionCil cilTree)
+        {
+            switch (cilTree.Name)
+            {
+                case "Object_abort":
+                    cilTree.ThreeDirInses.Add(new Halt());
+                    return null;
+                case "Object_type_name":
+                    var x_type_name = new LocalCil("x");
+                    cilTree.LocalCils.Add(x_type_name);
+                    cilTree.ThreeDirInses.Add(new Type_Name(x_type_name,cilTree.self));
+                    return x_type_name;
+                case "Object_copy":
+                    var x_Object_copy = new LocalCil("x");
+                    cilTree.LocalCils.Add(x_Object_copy);
+                    cilTree.ThreeDirInses.Add(new Copy(x_Object_copy, cilTree.self));
+                    return x_Object_copy;
+                case "IO_out_string":
+                    cilTree.ThreeDirInses.Add(new Out_strCil(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self")));
+                    return cilTree.self;
+                case "IO_out_int":
+                    cilTree.ThreeDirInses.Add(new Out_intCil(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self")));
+                    return cilTree.self;
+                case "IO_in_string":
+                    var x_in_string = new LocalCil("x");
+                    cilTree.LocalCils.Add(x_in_string);
+                    cilTree.ThreeDirInses.Add(new In_strCil(x_in_string));
+                    return x_in_string;
+                case "IO_in_int":
+                    var x_in_int  = new LocalCil("x");
+                    cilTree.LocalCils.Add(x_in_int);
+                    cilTree.ThreeDirInses.Add(new In_intCil(x_in_int));
+                    return x_in_int;
+                default:
+                    return null;
+            }
         }
     }
 }

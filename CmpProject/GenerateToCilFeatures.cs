@@ -69,20 +69,15 @@ namespace CmpProject
         }
         public void Visit(AttributeContext parserRule, ITypeCil cilTree)
         {
-            //cilTree.AddAttr(new AttributeCil(type.type.Text, parserRule.idText, CilAst.GetTypeCilByName(parserRule.typeText)));
             cilTree.AddAttr(new AttributeCil(type.type.Text, parserRule.idText));
         }
         public void Visit(MethodContext parserRule, ITypeCil cilTree)
         {
             //Creo la funcion e cil y la se anade al CilAst
-            //var function = CilAst.CreateFunctionCil(type.type.Text, parserRule.idText, CilAst.GetTypeCilByName(parserRule.typeText));
             var function = CilAst.CreateFunctionCil(type.type.Text, parserRule.idText);
-
             //Le hago referencia al tipo correspondiente
             //La al anadirla ya hay una funcion definida con el mismo nombre se le cambia el nombre de la funcionCil por el nuevo
-            //cilTree.AddFunc(new FunctionTypeCil(type.type.Text, parserRule.idText,function,CilAst.GetTypeCilByName(parserRule.typeText)));
-            cilTree.AddFunc(new FunctionTypeCil(type.type.Text, parserRule.idText,function));
-            //}
+            cilTree.AddFunc(new FunctionTypeCil(type.type.Text, parserRule.idText,function));   
         }
     }
 }

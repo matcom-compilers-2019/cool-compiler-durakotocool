@@ -24,10 +24,10 @@ namespace CmpProject
             //var streamReader = new StreamReader("Testing/String.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Expresion let.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/Factorial.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Tipos.cl").ReadToEnd();
+            var streamReader = new StreamReader("Testing/Tipos.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/ZAHUIS.cl").ReadToEnd();
             //var streamReader = new StreamReader("Testing/IO.cl").ReadToEnd();
-            var streamReader = new StreamReader("Testing/Object.cl").ReadToEnd();
+            //var streamReader = new StreamReader("Testing/Object.cl").ReadToEnd();
             var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader));
             var tokens = new CommonTokenStream(MyLexer);
             var MyParser = new COOLgrammarParser(tokens);

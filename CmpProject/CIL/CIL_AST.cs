@@ -920,201 +920,201 @@ namespace CmpProject.CIL
         }
     }//
 #endregion
-    #region String_funcions
-    class LoadCil: UnaryCil
-    {
+#region String_funcions
+class LoadCil: UnaryCil
+{
 
-        public LoadCil(IVarCil x, IVarCil stringCil):base(x,stringCil)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X}= LOAD {Y}\n";
-        }
-    }
-    class LenghtCil:UnaryCil
+    public LoadCil(IVarCil x, IVarCil stringCil):base(x,stringCil)
     {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   {X}= LOAD {Y}\n";
+    }
+}
+class LenghtCil:UnaryCil
+{
        
-        public LenghtCil(IVarCil x, IHolderCil y) : base(x,y){
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X} = LENGHT {Y}\n";
-        }
+    public LenghtCil(IVarCil x, IHolderCil y) : base(x,y){
     }
-    class ConcatCil : BinaryVarCil
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
     {
-        public ConcatCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X} = CONCAT {Y} {Z}\n";
-        }
+        return null;
     }
-    class SubStringCil : BinaryVarCil
+    public override string ToString()
     {
-        public IHolderCil L { get; set; }
-        public SubStringCil(IVarCil x, IHolderCil y, IHolderCil i,IHolderCil l) : base(x, y, i)
-        {
-            L = l;
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X} = SUBSTRING {Y} {Z} {L}\n";
-        }
+        return $"   {X} = LENGHT {Y}\n";
     }
-    class StrCil:ZyroCil
+}
+class ConcatCil : BinaryVarCil
+{
+    public ConcatCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)
     {
-        public IVarCil Y { get; set; }
-        public StrCil(IVarCil x, IVarCil y) : base(x)
-        {
-            Y = y;
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
     }
-    #endregion
-    #region IO
-    class In_strCil:ZyroCil
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
     {
-        public In_strCil(IVarCil x):base(x)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X}=in_str\n";
-        }
+        return null;
     }
-    class In_intCil : ZyroCil
+    public override string ToString()
     {
-        public In_intCil(IVarCil x) : base(x)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X}=in_int\n";
-        }
+        return $"   {X} = CONCAT {Y} {Z}\n";
     }
-    class Out_strCil:ZyroCil
+}
+class SubStringCil : BinaryVarCil
+{
+    public IHolderCil L { get; set; }
+    public SubStringCil(IVarCil x, IHolderCil y, IHolderCil i,IHolderCil l) : base(x, y, i)
     {
-        public Out_strCil(IVarCil x):base(x)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   out_str {X}\n";
-        }
+        L = l;
     }
-    class Out_intCil : ZyroCil
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
     {
-        public Out_intCil(IVarCil x) : base(x)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   out_int {X}\n";
-        }
+        return null;
     }
-    #endregion
-    #region IsConform
-    //Esta expresion devuelve 1 si a<=b y 0 etc.
-    class IsNotConformCil:BinaryVarCil
+    public override string ToString()
+    {
+        return $"   {X} = SUBSTRING {Y} {Z} {L}\n";
+    }
+}
+class StrCil:ZyroCil
+{
+    public IVarCil Y { get; set; }
+    public StrCil(IVarCil x, IVarCil y) : base(x)
+    {
+        Y = y;
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+}
+#endregion
+#region IO
+class In_strCil:ZyroCil
+{
+    public In_strCil(IVarCil x):base(x)
+    {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   {X}=in_str\n";
+    }
+}
+class In_intCil : ZyroCil
+{
+    public In_intCil(IVarCil x) : base(x)
+    {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   {X}=in_int\n";
+    }
+}
+class Out_strCil:ZyroCil
+{
+    public Out_strCil(IVarCil x):base(x)
+    {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   out_str {X}\n";
+    }
+}
+class Out_intCil : ZyroCil
+{
+    public Out_intCil(IVarCil x) : base(x)
+    {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   out_int {X}\n";
+    }
+}
+#endregion
+#region IsConform
+//Esta expresion devuelve 1 si a<=b y 0 etc.
+class IsNotConformCil:BinaryVarCil
+{
+
+    public IsNotConformCil( IVarCil x, IHolderCil a, IHolderCil b):base(x,a,b){}
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   {X}= ISNOTCONFORM {Y.Name} {Z.Name}\n";
+    }
+}
+#endregion
+#region Object
+class Halt:ThreeDirIns
+{
+    public Halt()
+    {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        return null;
+    }
+    public override string ToString()
+    {
+        return $"   halt\n";
+    }
+}
+class Copy : UnaryCil
+{
+    public Copy(IVarCil x, IHolderCil y) : base(x, y)
     {
 
-        public IsNotConformCil( IVarCil x, IHolderCil a, IHolderCil b):base(x,a,b){}
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   {X}= ISNOTCONFORM {Y.Name} {Z.Name}\n";
-        }
     }
-    #endregion
-    #region Halt
-    class Halt:ThreeDirIns
+
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
     {
-        public Halt()
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            return null;
-        }
-        public override string ToString()
-        {
-            return $"   halt\n";
-        }
+        throw new NotImplementedException();
     }
-    class Copy : UnaryCil
+    public override string ToString()
     {
-        public Copy(IVarCil x, IHolderCil y) : base(x, y)
-        {
-
-        }
-
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            throw new NotImplementedException();
-        }
-        public override string ToString()
-        {
-            return $"   {X}= copy {Y}\n";
-        }
+        return $"   {X}= copy {Y}\n";
     }
-    class Type_Name : UnaryCil
+}
+class Type_Name : UnaryCil
+{
+    public Type_Name(IVarCil x, IHolderCil y) : base(x, y)
     {
-        public Type_Name(IVarCil x, IHolderCil y) : base(x, y)
-        {
 
-        }
-
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-        {
-            throw new NotImplementedException();
-        }
-        public override string ToString()
-        {
-            return $"   {X}= type_name {Y}\n";
-        }
     }
-    #endregion
+
+    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    {
+        throw new NotImplementedException();
+    }
+    public override string ToString()
+    {
+        return $"   {X}= type_name {Y}\n";
+    }
+}
+#endregion
     static class Others
     {
         //Este metodo empata las implementaciones que hereden de Ide (tipos o funciones)

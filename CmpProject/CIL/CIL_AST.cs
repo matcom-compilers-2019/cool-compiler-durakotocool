@@ -981,26 +981,14 @@ class LoadCil: UnaryCil
 
     public LoadCil(IVarCil x, IVarCil stringCil):base(x,stringCil)
     {
-
-        public LoadCil(IVarCil x, IVarCil stringCil):base(x,stringCil)
-        {
-        }
-        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
-        {
-            List<string> lines = new List<string>() {
+    }
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
+    {
+        List<string> lines = new List<string>() {
                 $"lw $t0, {Y.Name}"
             };
-            lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
-            return new MIPS() { Functions = lines };
-        }
-        public override string ToString()
-        {
-            return $"   {X}= LOAD {Y}\n";
-        }
-    }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
-    {
-        return null;
+        lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+        return new MIPS() { Functions = lines };
     }
     public override string ToString()
     {
@@ -1012,7 +1000,7 @@ class LenghtCil:UnaryCil
        
     public LenghtCil(IVarCil x, IHolderCil y) : base(x,y){
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1026,7 +1014,7 @@ class ConcatCil : BinaryVarCil
     public ConcatCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)
     {
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1042,7 +1030,7 @@ class SubStringCil : BinaryVarCil
     {
         L = l;
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1058,7 +1046,7 @@ class StrCil:ZyroCil
     {
         Y = y;
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1070,7 +1058,7 @@ class In_strCil:ZyroCil
     public In_strCil(IVarCil x):base(x)
     {
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1084,7 +1072,7 @@ class In_intCil : ZyroCil
     public In_intCil(IVarCil x) : base(x)
     {
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1098,7 +1086,7 @@ class Out_strCil:ZyroCil
     public Out_strCil(IVarCil x):base(x)
     {
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1112,7 +1100,7 @@ class Out_intCil : ZyroCil
     public Out_intCil(IVarCil x) : base(x)
     {
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1128,7 +1116,7 @@ class IsNotConformCil:BinaryVarCil
 {
 
     public IsNotConformCil( IVarCil x, IHolderCil a, IHolderCil b):base(x,a,b){}
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1144,7 +1132,7 @@ class Halt:ThreeDirIns
     public Halt()
     {
     }
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
         return null;
     }
@@ -1160,9 +1148,9 @@ class Copy : UnaryCil
 
     }
 
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
-        throw new NotImplementedException();
+            return null;
     }
     public override string ToString()
     {
@@ -1176,9 +1164,9 @@ class Type_Name : UnaryCil
 
     }
 
-    public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+    public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
-        throw new NotImplementedException();
+            return null;
     }
     public override string ToString()
     {

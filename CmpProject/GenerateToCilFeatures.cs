@@ -7,7 +7,7 @@ using static COOLgrammarParser;
 using CmpProject.CIL;
 namespace CmpProject
 {
-    class GenerateToCilFeatures:IVisitorCil<ClassContext, ITypeCil>,
+    public class GenerateToCilFeatures:IVisitorCil<ClassContext, ITypeCil>,
     IVisitorCilWhitContext<FeatureContext, ITypeCil>,
     IVisitorCil<AttributeContext, ITypeCil>,
     IVisitorCil<MethodContext, ITypeCil>
@@ -18,7 +18,7 @@ namespace CmpProject
         ClassContext type { get; set; }
         public IFunctionCil functionCil { get; set; }
         public BasicTypes basicTypes { get; set; }
-        public GenerateToCilFeatures(GenerateToCilTypes generateToCilTypes)
+        internal GenerateToCilFeatures(GenerateToCilTypes generateToCilTypes)
         {
             basicTypes = generateToCilTypes.basicTypes;
             GlobalContext = generateToCilTypes.GlobalContext;

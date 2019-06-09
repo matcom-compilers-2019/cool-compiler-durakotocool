@@ -20,9 +20,21 @@ namespace CmpProject
             var types = Cil.CilAst.TypeCils;
             var data = Cil.CilAst.dataStringCils;
             //var functionsMIPS = functions.Select(x => Visitor(x));
+            var mipsResult = new MIPS() { Data = new List<string>() { "heap: .space 2000000" } };
+            mipsResult.Data.Add("heapPointer: .word 0");
+            mipsResult.Data.AddRange(data.Select(x => $"{x.varCil}: asciiz {x.stringCil}"));
+            foreach (var t in types)
+            {
+                mipsResult.Data.Add($"type_{t.Name}:");
+                mipsResult.Data.Add($"\ttype_{t.Name}_Length: .byte {t.Attributes.Count *4}");
+                foreach (var f in t.Functions)
+                {
+                    mipsResult.Data.Add($"\ttype_{t.Name}_{f.CilName}: .word {f.Function.Name}");
+                }
+                mipsResult.Data.Add($"\ttype_{t.Name}_name: .asciiz \"{t.Name}\"");
+            }
             var functionsMIPS = (from i in functions
                           select Visitor(i, program)).ToList();
-            var mipsResult = new MIPS();
             for (int i = 0; i < functionsMIPS.Count; i++)
             {
                 var current = functionsMIPS[i];
@@ -37,7 +49,7 @@ namespace CmpProject
         {
             var mipsResult = new MIPS() { Functions = Utils.AcomodarLocales(function) };
             var functionsVisited = function.ThreeDirInses.Select(x => {
-                return x.ToMIPS(function, program);
+                return x.ToMIPS(function, Cil);
             }).ToList();
             for (int i = 0; i < functionsVisited.Count; i++)
             {

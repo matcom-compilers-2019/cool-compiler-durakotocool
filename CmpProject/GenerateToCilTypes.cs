@@ -8,7 +8,7 @@ using static COOLgrammarParser;
 
 namespace CmpProject
 {
-    class GenerateToCilTypes:IVisitor<ProgramContext>
+    internal class GenerateToCilTypes:IVisitor<ProgramContext>
     //,IVisitorCil<ClassContext, ITypeCil>,
     //IVisitorCilWhitContext<FeatureContext, ITypeCil>,
     //IVisitorCil<AttributeContext, ITypeCil>,

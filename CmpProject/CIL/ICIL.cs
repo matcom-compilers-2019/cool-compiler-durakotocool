@@ -70,7 +70,7 @@ namespace CmpProject.CIL
     }
     public interface IThreeDirIns
     {
-        MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program);
+        MIPS ToMIPS(IFunctionCil function, GenerateToCil cil);
     }
     public interface IFeuturesCil:IVarCil
     {

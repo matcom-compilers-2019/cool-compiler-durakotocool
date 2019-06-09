@@ -19,7 +19,7 @@ namespace CmpProject.CIL
             else if (function.ArgCils.Contains(x))
             {   //si y es un parametro
                 var index = function.ArgCils.ToList().FindIndex(i => i.Name.Equals(x.Name));
-                result.Add($"mov $a{index}, ${src}");
+                result.Add($"move $a{index}, ${src}");
             }
             return result;
         }
@@ -34,7 +34,7 @@ namespace CmpProject.CIL
             else if (function.ArgCils.Contains(x))
             {   //si y es un parametro
                 var index = function.ArgCils.ToList().FindIndex(i => i.Name.Equals(x.Name));
-                result.Add($"mov ${dest}, $a{index}");
+                result.Add($"move ${dest}, $a{index}");
             }
             else    //si y es un valor
             {
@@ -362,7 +362,7 @@ namespace CmpProject.CIL
 
     public abstract class ThreeDirIns : IThreeDirIns
     {
-        public abstract MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program);
+        public abstract MIPS ToMIPS(IFunctionCil function, GenerateToCil cil);
     }
     //Esta clase representa la instrucciones que contienen dos holder de CIL
     public abstract class BinaryVarCil:UnaryCil
@@ -401,7 +401,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "add $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -425,7 +425,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "sub $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -449,7 +449,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "mul $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -472,7 +472,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "div $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -495,7 +495,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "seq $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -518,7 +518,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "sne $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -541,7 +541,7 @@ namespace CmpProject.CIL
         {
         }
 
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "slt $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -563,7 +563,7 @@ namespace CmpProject.CIL
         public Minor_EqualCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "sle $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
@@ -585,7 +585,7 @@ namespace CmpProject.CIL
         public NegCil(IVarCil x, IHolderCil y) : base(x, y)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, function)){
                     "neg $t0, $t1" //Guarda en t0 la suma de t1
@@ -609,7 +609,7 @@ namespace CmpProject.CIL
         public AssigCil(IVarCil x, IHolderCil y) : base(x, y)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>();
             lines.AddRange(Utils.SaveToRegister(Y, function, "t1")); //muevo parte derecha para t1
@@ -629,9 +629,21 @@ namespace CmpProject.CIL
         public GetAttrCil(IVarCil x, IVarCil y, IAttributeCil b) : base(x,y, b)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
-            return null;
+            var attr = Z as AttributeCil;
+            var typeName = attr.Name.Substring(0, attr.Name.Length - attr.CilName.Length - 1);
+            var type = cil.CilAst.TypeCils.First(x => x.Name == typeName);
+            var indexOf = type.Attributes.ToList().IndexOf(attr);
+
+
+            var lines = new List<string>(Utils.SaveToRegister((IVarCil)Y, function, "t0")){
+                $"addi $t0, $t0, {(indexOf+2)*4}",
+                $"lw $t1, ($t0)"
+            };
+            lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+            
+            return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -644,9 +656,20 @@ namespace CmpProject.CIL
         public SetAttrCil(IVarCil x, IAttributeCil b ,IHolderCil y) : base(x, b,y)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
-            return null;
+            var attr = Y as AttributeCil;
+            var typeName = attr.Name.Substring(0,attr.Name.Length - attr.CilName.Length - 1);
+            var type = cil.CilAst.TypeCils.First(x => x.Name == typeName);
+            var indexOf = type.Attributes.ToList().IndexOf(attr);
+
+
+            var lines = new List<string>(Utils.SaveToRegister(X, function, "t0")){
+                $"addi $t0, $t0, {(indexOf+2)*4}"
+            };
+            lines.AddRange(Utils.LoadFromRegister((IVarCil)Y, function, "t1"));
+            lines.Add($"sw $t1, ($t0)");
+            return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -670,7 +693,7 @@ namespace CmpProject.CIL
     class GetIndex:IndexCil
     {
         public VarCil X { get; set; }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -681,7 +704,7 @@ namespace CmpProject.CIL
     }
     class  SetIndex:IndexCil
     {
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -702,12 +725,31 @@ namespace CmpProject.CIL
     }
     class Allocate:TypeManage
     {
+        internal static int heapPointer = 0;
         public Allocate(IVarCil x, ITypeCil typeCil) : base(x, typeCil)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
-            return null;
+            var type = Y as ITypeCil;
+            var modifyHeapPointer = new string[]{
+                    $"addi $t1, $t1, {(type.Attributes.Count+2) * 4}",
+                    $"sw $t1, heapPointer"      //Correr el heapPointer
+                };
+            var lines = new List<string>(){
+                $"la $t0, heap",        //Cargar la direccion del heap
+                $"lw $t1, heapPointer", //Cargar la direccion del heapPointer
+                $"add $t0, $t0, $t1",   //Obtener la direccion a escribir
+                $"move $v0, $t0",    //Guardarlo para devolverlo
+                $"la $t2, type_{type.Name}_name", //Escribir el nombre
+                $"sw $t2, ($t0)",   //Salvarlo
+	            $"add $t0, $t0, 4",
+                $"li $t2, {type.Attributes.Count*4}",       //Escribir la cantidad de bytes de los argumentos
+	            $"sw $t2, ($t0)$"   //Salvarlo
+            };
+            lines.AddRange(modifyHeapPointer);
+            lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
+            return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -719,7 +761,7 @@ namespace CmpProject.CIL
         public TypeOf(IVarCil x, IHolderCil typeCil) : base(x, typeCil)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -734,7 +776,7 @@ namespace CmpProject.CIL
         {
            
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -746,7 +788,7 @@ namespace CmpProject.CIL
         public CallCil(IVarCil x, IFunctionCil f):base(x,f)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             ArgExprCil.count = 0;
             var lines = new List<string>() {
@@ -767,9 +809,18 @@ namespace CmpProject.CIL
         {
             
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             ArgExprCil.count = 0;
+            if (Y is TypeCil)
+            {
+                var label = ((FunctionTypeCil)this.Z).Function.Name;
+                var lines = new List<string>() {
+                    $"jal {label}"
+                };
+                lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
+                return new MIPS() { Functions = lines };
+            }
             return null;
         }
         public override string ToString()
@@ -785,7 +836,7 @@ namespace CmpProject.CIL
         {
             X = x;
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             if (count < 4)
             {
@@ -819,7 +870,7 @@ namespace CmpProject.CIL
         {
             this.labelCil = labelCil;
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(){
                     $"{labelCil.Name}:" //salta condicionalmente
@@ -847,7 +898,7 @@ namespace CmpProject.CIL
         {
             VarCil = varCil;
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(VarCil, function)){
                     $"beq $t1, 1, {LabelCil.Name}" //salta condicionalmente
@@ -862,7 +913,7 @@ namespace CmpProject.CIL
     class GotoCil: Goto
     {
         public GotoCil(ILabelCil labelCil):base(labelCil){}
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(){
                     $"j {LabelCil.Name}" //Guarda en t0 la suma de t1
@@ -883,7 +934,7 @@ namespace CmpProject.CIL
         {
             X = x;
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             string returnedValue;
 
@@ -895,7 +946,7 @@ namespace CmpProject.CIL
             else if (function.ArgCils.Contains(X))
             {   //si y es un parametro
                 var index = function.ArgCils.ToList().FindIndex(i => i.Name.Equals(X.Name));
-                returnedValue =$"mov $v0, $a{index}";
+                returnedValue =$"move $v0, $a{index}";
             }
             else if (X is ValuelCil)
                 returnedValue = $"lw $v0, {X.Name}";   
@@ -923,9 +974,13 @@ namespace CmpProject.CIL
         public LoadCil(IVarCil x, IVarCil stringCil):base(x,stringCil)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
-            return null;
+            List<string> lines = new List<string>() {
+                $"lw $t0, {Y.Name}"
+            };
+            lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+            return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -937,7 +992,7 @@ namespace CmpProject.CIL
        
         public LenghtCil(IVarCil x, IHolderCil y) : base(x,y){
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -951,7 +1006,7 @@ namespace CmpProject.CIL
         public ConcatCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -967,7 +1022,7 @@ namespace CmpProject.CIL
         {
             L = l;
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -983,7 +1038,7 @@ namespace CmpProject.CIL
         {
             Y = y;
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -995,7 +1050,7 @@ namespace CmpProject.CIL
         public ReadCil(VarCil x):base(x)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -1005,7 +1060,7 @@ namespace CmpProject.CIL
         public PrintCil(VarCil x):base(x)
         {
         }
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }
@@ -1017,7 +1072,7 @@ namespace CmpProject.CIL
     {
 
         public IsNotConformCil( IVarCil x, IHolderCil a, IHolderCil b):base(x,a,b){}
-        public override MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program)
+        public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             return null;
         }

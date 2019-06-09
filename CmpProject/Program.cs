@@ -15,17 +15,19 @@ namespace CmpProject
     {
         static void Main(string[] args)
         {
-            //var streamReader = new StreamReader("Testing/Tipos.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Dispatch.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Expresion Case.cool").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Bool.cool").ReadToEnd();
-            var streamReader = new StreamReader("Testing/Nuevo tipo.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Comparaciones.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/String.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Expresion let.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Factorial.cl").ReadToEnd();
-            //var streamReader = new StreamReader("Testing/Tipos.cl").ReadToEnd();
-            var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader));
+            //var streamReader = new StreamReader("Testing/Tipos.cl");
+            //var streamReader = new StreamReader("Testing/Dispatch.cl");
+            var streamReader = new StreamReader("Testing/ZAHUIS.cl");
+            //var streamReader = new StreamReader("Testing/Expresion Case.cool");
+            //var streamReader = new StreamReader("Testing/Bool.cool");
+            //var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
+            //var streamReader = new StreamReader("Testing/Comparaciones.cl");
+            //var streamReader = new StreamReader("Testing/String.cl");
+            //var streamReader = new StreamReader("Testing/Expresion let.cl");
+            //var streamReader = new StreamReader("Testing/Factorial.cl");
+            //var streamReader = new StreamReader("Testing/Tipos.cl");
+            var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader.ReadToEnd()));
+            streamReader.Close();
             var tokens = new CommonTokenStream(MyLexer);
             var MyParser = new COOLgrammarParser(tokens);
             var program = MyParser.program();

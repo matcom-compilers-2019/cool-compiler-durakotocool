@@ -1,13 +1,13 @@
-class X inherits A{
-   c:B<-new B;
-};
-class A
+
+class Main
 {
-   b:Object<-(new B).sum(5,3);
-  
-   sum(p1:Int,p2:Int):Int{ p1+p2+1};
+   main():Bool{
+     isvoid(new B)
+   };
 };
-class B inherits A
+
+
+class B
 {
   b:String<-"caca";
   a:Int<-{2; 3;7+3;};

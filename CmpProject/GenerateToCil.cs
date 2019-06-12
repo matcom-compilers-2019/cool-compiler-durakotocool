@@ -326,20 +326,7 @@ namespace CmpProject
             cilTree.LocalCils.Add(value);
             var valueExpr = Visit(parserRule.expresion, cilTree, contextCil);
             cilTree.ThreeDirInses.Add(new RestCil(value,new HolderCil("1"), valueExpr));
-            //var valueExpr = Visit(parserRule.expresion, cilTree,contextCil);
-            //var labelElse = new LabelCil("else" + cilTree.ThreeDirInses.Count);
-            //cilTree.ThreeDirInses.Add(new IfGoto(valueExpr, labelElse));
-            ////Si es igual a 0 le asigno al resultado 1
-            //cilTree.ThreeDirInses.Add(new AssigCil(value,new ValuelCil("1")));
-            //var labelEnd = new LabelCil("end" + cilTree.ThreeDirInses.Count);
-            ////Voy pa la etiqueta end
-            //cilTree.ThreeDirInses.Add(new GotoCil(labelEnd));
-            ////Pongo la etiqueta de else
-            //cilTree.ThreeDirInses.Add(new Label(labelElse));
-            ////Si es diferente a 0 le asigno al resultado 0
-            //cilTree.ThreeDirInses.Add(new AssigCil(value, new ValuelCil("0")));
-            ////Pongo la etiqueta end
-            //cilTree.ThreeDirInses.Add(new Label(labelEnd));
+
             return value;
         }
         public IHolderCil Visit(ArithContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -370,7 +357,14 @@ namespace CmpProject
         }
         public IHolderCil Visit(IsvoidExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
-            throw new NotImplementedException();
+            var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(value);
+            var valueExpr = Visit(parserRule.expresion, cilTree, contextCil);
+            var TypeValue= new LocalCil($"_TypeValue{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(TypeValue);
+            cilTree.ThreeDirInses.Add(new TypeOf(TypeValue, valueExpr));
+            cilTree.ThreeDirInses.Add(new EqualCil(value,TypeValue,CilAst.GetTypeCilByName("void")));
+            return value;
         }
         public IHolderCil Visit(NegExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
@@ -431,8 +425,7 @@ namespace CmpProject
         }
         public IHolderCil Visit(WhileExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
-            var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
-            cilTree.LocalCils.Add(value);
+            
             var whileElse = new LabelCil("while" + cilTree.ThreeDirInses.Count);
             //Voy para esa etiqueta para evaluar la cod del while
             cilTree.ThreeDirInses.Add(new GotoCil(whileElse));
@@ -445,6 +438,7 @@ namespace CmpProject
             var condValue = Visit(parserRule.whileExpr, cilTree,contextCil);
             cilTree.ThreeDirInses.Add(new IfGoto(condValue, loop));
             //retorno el valor
+            var value = Visit_void(cilTree);
             return value;
         }
         public IHolderCil Visit(BlockExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -636,7 +630,7 @@ namespace CmpProject
                     }
                     else
                     {
-                        if (attributeTemp.Type == GlobalContext.Int|| attributeTemp.Type == GlobalContext.Bool)
+                        if (attributeTemp.Type == GlobalContext.Int || attributeTemp.Type == GlobalContext.Bool)
                         {
                             init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), new ValuelCil("0")));
                         }
@@ -649,6 +643,10 @@ namespace CmpProject
                             CilAst.dataStringCils.Add(new DataStringCil(varDataString, new StringCil(stringCool)));
                             init.ThreeDirInses.Add(new LoadCil(valueS, varDataString));
                             init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), valueS));
+                        }
+                        else
+                        {
+                            init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), Visit_void(init)));
                         }
                     }
                 }
@@ -692,6 +690,14 @@ namespace CmpProject
                 default:
                     return null;
             }
+        }
+
+        public IHolderCil Visit_void(IFunctionCil cilTree)
+        {
+            var valueV = new LocalCil($"_value{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(valueV);
+            cilTree.ThreeDirInses.Add(new CallCil(valueV, CilAst.void_init));
+            return valueV;
         }
     }
 }

@@ -14,6 +14,8 @@ namespace CmpProject.CIL
     {
         ITypeCil Object { get; set; }
         ISet<ITypeCil> TypeCils { get; set; }
+
+        IFunctionCil void_init { get; }
         ISet<IDataStringCil> dataStringCils { get; set; }
         ISet<IFunctionCil> FunctionCils { get; set; }
         ITypeCil GetTypeCilByName(string Name);

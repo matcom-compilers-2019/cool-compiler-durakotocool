@@ -118,6 +118,8 @@ namespace CmpProject.CIL
         public ISet<IDataStringCil> dataStringCils { get; set; }
         public ITypeCil Object { get ; set; }
 
+        public IFunctionCil void_init => FunctionCils.Single(t => t.Name == "void_Init");
+
         public CilAst()
         {
                 TypeCils=new HashSet<ITypeCil>();
@@ -517,7 +519,7 @@ namespace CmpProject.CIL
         }
         public override string ToString()
         {
-            return $"   {X}={Y}=={Z}\n";
+            return $"   {X}={Y.Name}=={Z.Name}\n";
         }
     }//
     class NotEqualCil : BinaryVarCil

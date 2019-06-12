@@ -93,7 +93,7 @@ namespace CmpProject
             else
             {
                 // El nombre metodo en el tipo tiene siempre esta estructura (Type_CoolName)
-                function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}_{parserRule.idText}");
+                function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}@{parserRule.idText}");
                 // Como toda fucion pertenece a una clase se le agrega self como una parametro
                 var self = new ArgCil("self");
                 function.ArgCils.Add(self);

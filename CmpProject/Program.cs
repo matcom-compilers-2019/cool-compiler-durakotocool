@@ -15,18 +15,18 @@ namespace CmpProject
     {
         static void Main(string[] args)
         {
-            //var streamReader = new StreamReader("Testing/Tipos.cl");
-            //var streamReader = new StreamReader("Testing/Dispatch.cl");
-            var streamReader = new StreamReader("Testing/ZAHUIS.cl");
-            //var streamReader = new StreamReader("Testing/Expresion Case.cool");
-            //var streamReader = new StreamReader("Testing/Bool.cool");
-            //var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
-            //var streamReader = new StreamReader("Testing/Comparaciones.cl");
-            //var streamReader = new StreamReader("Testing/String.cl");
-            //var streamReader = new StreamReader("Testing/Expresion let.cl");
-            //var streamReader = new StreamReader("Testing/Factorial.cl");
-            //var streamReader = new StreamReader("Testing/Tipos.cl");
-            var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader.ReadToEnd()));
+			//var streamReader = new StreamReader("Testing/Tipos.cl");
+			//var streamReader = new StreamReader("Testing/Dispatch.cl");
+			//var streamReader = new StreamReader("Testing/ZAHUIS.cl");
+			//var streamReader = new StreamReader("Testing/Expresion Case.cool");
+			//var streamReader = new StreamReader("Testing/Bool.cool");
+			//var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
+			//var streamReader = new StreamReader("Testing/Comparaciones.cl");
+			//var streamReader = new StreamReader("Testing/String.cl");
+			//var streamReader = new StreamReader("Testing/Expresion let.cl");
+			var streamReader = new StreamReader("Testing/Factorial.cl");
+			//var streamReader = new StreamReader("Testing/Tipos.cl");
+			var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader.ReadToEnd()));
             streamReader.Close();
             var tokens = new CommonTokenStream(MyLexer);
             var MyParser = new COOLgrammarParser(tokens);
@@ -50,13 +50,17 @@ namespace CmpProject
                 Console.WriteLine(generateCil.CilAst);
                 var generateMips = new CilToMips(generateCil);
                 var mips = generateMips.Visit(program);
-                Console.WriteLine(".data");
-                mips.Data.ForEach(x => Console.WriteLine(x));
-                Console.WriteLine(".text");
-                mips.Text.ForEach(x => Console.WriteLine(x));
-                Console.WriteLine("-----functions-----");
-                mips.Functions.ForEach(x => Console.WriteLine(x));
-
+				StreamWriter streamWriter = new StreamWriter("mips.asm");
+				streamWriter.WriteLine(".data");
+                //Console.WriteLine(".data");
+                mips.Data.ForEach(x => streamWriter.WriteLine(x));
+                //Console.WriteLine(".text");
+				streamWriter.WriteLine(".text");
+				mips.Text.ForEach(x => streamWriter.WriteLine(x));
+                //Console.WriteLine("##-----functions-----");
+				streamWriter.WriteLine("##-----functions-----");
+				mips.Functions.ForEach(x => streamWriter.WriteLine(x));
+				streamWriter.Close();
             }
             foreach (var item in CheckSemantic.errorLogger.msgs)
             {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +31,8 @@ namespace CmpProject
                 {
                     mipsResult.Data.Add($"\ttype_{t.Name}_{f.CilName}: .word {f.Function.Name}");
                 }
-                mipsResult.Data.Add($"\ttype_{t.Name}_name: .asciiz \"{t.Name}\"");
+				mipsResult.Data.Add($"\ttype_{t.Name}_count_methods: .word {t.Functions.Count}");
+				mipsResult.Data.Add($"\ttype_{t.Name}_name: .asciiz \"{t.Name}\"");
             }
             var functionsMIPS = (from i in functions
                           select Visitor(i, program)).ToList();
@@ -56,7 +57,7 @@ namespace CmpProject
                 var current = functionsVisited[i];
                 if (current == null)
                 {
-                    mipsResult.Functions.Add("-----\t"+function.ThreeDirInses.ToList()[i].ToString().TrimEnd()+ "\t-----");
+                    mipsResult.Functions.Add("##-----\t"+function.ThreeDirInses.ToList()[i].ToString().TrimEnd()+ "\t-----");
                 }
                 else
                 {

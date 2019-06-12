@@ -412,13 +412,9 @@ namespace CmpProject.CIL
         public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
-                    "add $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
-                };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
+                "add $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
+            };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
             return new MIPS() { Functions = lines };
         }
 
@@ -438,12 +434,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "sub $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
 
         public override string ToString()
@@ -462,12 +454,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "mul $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -485,12 +473,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "div $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -508,12 +492,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "seq $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -531,12 +511,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "sne $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -554,12 +530,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "slt $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -576,12 +548,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, Z, function)){
                     "sle $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -598,12 +566,8 @@ namespace CmpProject.CIL
             var lines = new List<string>(Utils.AcomodarVariables(Y, function)){
                     "neg $t0, $t1" //Guarda en t0 la suma de t1
                 };
-            if (function.LocalCils.Contains(X))
-            {
-                var index = function.localsDict[X.Name];
-                lines.Add($"sw $t0, {index}($sp)");
-            }
-            return new MIPS() { Functions = lines };
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
         }
         public override string ToString()
         {
@@ -753,7 +717,7 @@ namespace CmpProject.CIL
                 $"sw $t2, ($t0)",   //Salvarlo
 	            $"add $t0, $t0, 4",
                 $"li $t2, {type.Attributes.Count*4}",       //Escribir la cantidad de bytes de los argumentos
-	            $"sw $t2, ($t0)$"   //Salvarlo
+	            $"sw $t2, ($t0)"   //Salvarlo
             };
             lines.AddRange(modifyHeapPointer);
             lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
@@ -771,8 +735,12 @@ namespace CmpProject.CIL
         }
         public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
-            return null;
-        }
+			List<string> lines = new List<string>();
+			lines.AddRange(Utils.SaveToRegister(Y, function, "t0"));
+			lines.AddRange(Utils.LoadFromRegister(X, function, "t0"));
+			return new MIPS() { Functions = lines };
+
+		}
         public override string ToString()
         {
             return $"   {X}= TYPEOF {Y.Name}\n";
@@ -820,16 +788,34 @@ namespace CmpProject.CIL
         public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
             ArgExprCil.count = 0;
-            if (Y is TypeCil)
-            {
-                var label = ((FunctionTypeCil)this.Z).Function.Name;
-                var lines = new List<string>() {
-                    $"jal {label}"
-                };
-                lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
-                return new MIPS() { Functions = lines };
-            }
-            return null;
+			if (Y is TypeCil)
+			{
+				var label = ((FunctionTypeCil)Z).Function.Name;
+				var lines = new List<string>() {
+					$"jal {label}"
+				};
+				lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
+				return new MIPS() { Functions = lines };
+			}
+			else
+			{
+				var type = cil.CilAst.TypeCils.First(x=> x.Functions.Contains(Z));
+				var element = type.Functions.Single(x => x.Name == Z.Name);
+				var index = type.Functions.ToList().IndexOf(element);
+				var lines = new List<string>(Utils.SaveToRegister(Y,function,"t0"))
+				{
+					$"lw $t0, ($t0)",	//cargo la direccion del puntero (que es donde esta la direccion del nombre)
+					$"add $t0,$t0,-4",	//en -4 esta la cantidad de metodos
+					$"lw $t1, ($t0)",	//cargo la cantidad de metodos
+					$"mul $t1,$t1,-4",	//desplazamiento hasta el primer metodo
+					$"add $t0, $t0, $t1", //la direccion del primer metodo
+					$"add $t0,$t0,{index*4}", //aumentar desplazamiento del metodo buscado
+					$"lw $t0,($t0)",	//carga la direccion del metodo
+					$"jalr $t0"
+				};
+				lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
+				return new MIPS() { Functions = lines };
+			}
         }
         public override string ToString()
         {
@@ -944,29 +930,29 @@ namespace CmpProject.CIL
         }
         public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
         {
-            string returnedValue;
+            //string returnedValue;
 
-            if (function.LocalCils.Contains(X)) //si y es una variable local
-            {
-                var index = function.localsDict[X.Name];
-                returnedValue = $"lw $v0, {index}($sp)";
-            }
-            else if (function.ArgCils.Contains(X))
-            {   //si y es un parametro
-                var index = function.ArgCils.ToList().FindIndex(i => i.Name.Equals(X.Name));
-                returnedValue =$"move $v0, $a{index}";
-            }
-            else if (X is ValuelCil)
-                returnedValue = $"lw $v0, {X.Name}";   
-            else
-                returnedValue = $"li $v0, 0";
+            //if (function.LocalCils.Contains(X)) //si y es una variable local
+            //{
+            //    var index = function.localsDict[X.Name];
+            //    returnedValue = $"lw $v0, {index}($sp)";
+            //}
+            //else if (function.ArgCils.Contains(X))
+            //{   //si y es un parametro
+            //    var index = function.ArgCils.ToList().FindIndex(i => i.Name.Equals(X.Name));
+            //    returnedValue =$"move $v0, $a{index}";
+            //}
+            //else if (X is ValuelCil)
+            //    returnedValue = $"li $v0, {X.Name}";   
+            //else
+            //    returnedValue = $"li $v0, 0";
 
-            var lines = new List<string>(){
-                    $"lw $ra, {function.LocalCils.Count*4}", //Carga Ra que lo habia guardado en la pila
-                    $"addi $sp, $sp {(function.LocalCils.Count + 1) * 4}", // Setea el SP donde estaba anteriormente
-                    returnedValue,    //Coloca el valor de retorno en el registro correspondiente
-                    $"jr $ra"   //Salta para donde estaba
-                };
+			var lines = new List<string>(){
+					$"lw $ra, {function.LocalCils.Count*4}($sp)", //Carga Ra que lo habia guardado en la pila
+				};
+			lines.AddRange(Utils.SaveToRegister(X,function,"v0"));    //Coloca el valor de retorno en el registro correspondiente
+			lines.Add($"addi $sp, $sp {(function.LocalCils.Count + 1) * 4}"); // Setea el SP donde estaba anteriormente
+			lines.Add($"jr $ra");   //Salta para donde estaba
             return new MIPS() { Functions = lines };
         }
         public override string ToString()
@@ -1074,7 +1060,12 @@ class In_intCil : ZyroCil
     }
     public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
-        return null;
+		var lines = new List<string>(){
+			"li $v0, 5",
+			"syscall"
+		};
+		lines.AddRange(Utils.LoadFromRegister(X, function, "v0"));
+		return new MIPS() { Functions = lines };
     }
     public override string ToString()
     {
@@ -1088,8 +1079,12 @@ class Out_strCil:ZyroCil
     }
     public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
-        return null;
-    }
+		var lines = new List<string>(Utils.SaveToRegister(X, function, "a0")){
+			"li $v0, 4",
+			"syscall"
+		};
+		return new MIPS() { Functions = lines };
+	}
     public override string ToString()
     {
         return $"   out_str {X}\n";
@@ -1102,8 +1097,12 @@ class Out_intCil : ZyroCil
     }
     public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
-        return null;
-    }
+		var lines = new List<string>(Utils.SaveToRegister(X,function,"a0")){
+				"li $v0, 1",
+				"syscall"
+			};
+		return new MIPS() { Functions = lines };
+	}
     public override string ToString()
     {
         return $"   out_int {X}\n";
@@ -1134,7 +1133,7 @@ class Halt:ThreeDirIns
     }
     public override MIPS ToMIPS(IFunctionCil function, GenerateToCil cil)
     {
-        return null;
+		return new MIPS() { Functions = new List<string>() { "eret" } };
     }
     public override string ToString()
     {

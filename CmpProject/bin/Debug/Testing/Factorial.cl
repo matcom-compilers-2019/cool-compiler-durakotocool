@@ -1,9 +1,9 @@
-class Main{
-    main():Int{
-        0
+class Main inherits IO{
+    main():SELF_TYPE{
+        out_int(fact(2))
     };
     fact(i:Int):Int{
-        if (i=0) then 1 else i*fact(i-1) fi
+        if (i=1) then 1 else i*fact(i-1) fi
     };
     iterative(i:Int):Int{
         let f:Int<-1 in 

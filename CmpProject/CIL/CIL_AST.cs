@@ -542,7 +542,7 @@ namespace CmpProject.CIL
         }
         public override string ToString()
         {
-            return $"   {X}={Y}!={Z}\n";
+            return $"   {X}={Y.Name}!={Z.Name}\n";
         }
     }
     class MinorCil : BinaryVarCil

@@ -1,6 +1,6 @@
 class Main{
     main():Int{
-        0
+        iterative(4)
     };
     fact(i:Int):Int{
         if (i=0) then 1 else i*fact(i-1) fi

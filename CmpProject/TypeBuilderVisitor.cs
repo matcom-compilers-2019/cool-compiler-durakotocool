@@ -22,6 +22,7 @@ namespace CmpProject
             basicTypes = new BasicTypes(parserRule,globalContext);
             parserRule._classes.Insert(0,basicTypes.Object);
             parserRule._classes.Insert(0, basicTypes.IO);
+            parserRule._classes.Insert(0, basicTypes.Void);
             foreach (var _class in parserRule._classes)
             {
                 if (globalContext.IfDefineType(_class.type.Text))
@@ -31,7 +32,7 @@ namespace CmpProject
                     globalContext.CreateChildContext(_class.type.Text);
                     if (_class.inherits != null)
                         _class.father = parserRule._classes.FirstOrDefault(p => p.type.Text == _class.inherits.Text);
-                    else if(_class.type.Text!="Object")
+                    else if(_class.type.Text!="Object"&& _class.type.Text != "void")
                         _class.father = basicTypes.Object;
                     
                 }

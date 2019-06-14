@@ -15,6 +15,8 @@ namespace CmpProject
     {
         public ClassContext Object { get; set; }
         public ClassContext IO { get; set; }
+
+        public ClassContext Void { get; set; }
         public MethodContext entry { get; set; }
         public BasicTypes(ProgramContext program,IGlobalContext globalContext)
         {
@@ -101,6 +103,9 @@ namespace CmpProject
             exprBody._expresions.Add(exprBody1);
             exprBody.finalExpresion = exprBody2;
             entry.exprBody = exprBody;
+            //El tipo void
+            Void = new ClassContext(program, 0);
+            Void.type = new CommonToken(42, "void");
             
         }
     }

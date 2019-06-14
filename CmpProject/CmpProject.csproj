@@ -64,6 +64,7 @@
     <Compile Include="GenerateToCilTypes.cs" />
     <Compile Include="IVisitor.cs" />
     <Compile Include="MIPS.cs" />
+    <Compile Include="MyErrorListener.cs" />
     <Compile Include="Optimization\Data_Flow.cs" />
     <Compile Include="Optimization\GenerateToCilOptimization.cs" />
     <Compile Include="Program.cs" />

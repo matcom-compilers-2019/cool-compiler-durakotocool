@@ -19,15 +19,25 @@ namespace CmpProject
             //var streamReader = new StreamReader("Testing/Dispatch.cl");
             //var streamReader = new StreamReader("Testing/ZAHUIS.cl");
             //var streamReader = new StreamReader("Testing/Comparaciones.cl");
-            var streamReader = new StreamReader("Testing/Expresion Case.cl");
+            //var streamReader = new StreamReader("Testing/Expresion Case.cl");
             //var streamReader = new StreamReader("Testing/Bool.cool");
             //var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
             //var streamReader = new StreamReader("Testing/String.cl");
+			//var streamReader = new StreamReader("Testing/Tipos.cl");
+			//var streamReader = new StreamReader("Testing/Dispatch.cl");
+			//var streamReader = new StreamReader("Testing/ZAHUIS.cl");
+			//var streamReader = new StreamReader("Testing/Expresion Case.cl");
+			//var streamReader = new StreamReader("Testing/Bool.cool");
+			//var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
+			//var streamReader = new StreamReader("Testing/Comparaciones.cl");
+			//var streamReader = new StreamReader("Testing/String.cl");
             //var streamReader = new StreamReader("Testing/Expresion let.cl");
             //var streamReader = new StreamReader("Testing/Tipos.cl");
             //var streamReader = new StreamReader("Testing/While.cl");
             //var streamReader = new StreamReader("Testing/Example.cl");
             //var streamReader = new StreamReader("Testing/Factorial.cl");
+            //var streamReader = new StreamReader("Testing/Tipos.cl");
+            var streamReader = new StreamReader("Testing/Test de Cool.cl");
 
             #region Lexer
             var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader.ReadToEnd()));
@@ -71,7 +81,7 @@ namespace CmpProject
             {
                 foreach (var item in CheckSemantic.errorLogger.msgs)
                     Console.WriteLine(item);
-                return;
+
             }
             #endregion
             #region CoolToCil
@@ -83,16 +93,27 @@ namespace CmpProject
             //var generateCil = new GenerateToCilOptimization(CheckSemantic, generateCilFeatures);
             generateCil.Visit(program);
             Console.WriteLine(generateCil.CilAst);
+            StreamWriter streamWriter = new StreamWriter("mips.cil");
+            streamWriter.WriteLine(generateCil.CilAst);
+            streamWriter.Close();
             #endregion
-            #region CilToMips
+            #region CilToMIPS
             var generateMips = new CilToMips(generateCil);
             var mips = generateMips.Visit(program);
+            streamWriter = new StreamWriter("mips.asm");
+            streamWriter.WriteLine(".data");
+            mips.Data.ForEach(x => streamWriter.WriteLine(x));
+            streamWriter.WriteLine(".text");
+            mips.Text.ForEach(x => streamWriter.WriteLine(x));
+            streamWriter.WriteLine("##-----functions-----");
+            mips.Functions.ForEach(x => streamWriter.WriteLine(x));
             Console.WriteLine(".data");
             mips.Data.ForEach(x => Console.WriteLine(x));
             Console.WriteLine(".text");
             mips.Text.ForEach(x => Console.WriteLine(x));
-            Console.WriteLine("-----functions-----");
+            Console.WriteLine("##-----functions-----");
             mips.Functions.ForEach(x => Console.WriteLine(x));
+            streamWriter.Close();
             #endregion
         }
 

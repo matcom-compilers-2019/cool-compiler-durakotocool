@@ -93,7 +93,7 @@ namespace CmpProject
             else
             {
                 // El nombre metodo en el tipo tiene siempre esta estructura (Type_CoolName)
-                function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}@{parserRule.idText}");
+                function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}${parserRule.idText}");
                 // Como toda fucion pertenece a una clase se le agrega self como una parametro
                 var self = new ArgCil("self");
                 function.ArgCils.Add(self);
@@ -209,7 +209,7 @@ namespace CmpProject
             var isVoid= new LocalCil($"_isVoid{cilTree.ThreeDirInses.Count}");
             cilTree.LocalCils.Add(isVoid);
             cilTree.ThreeDirInses.Add(new NotEqualCil(isVoid,varType, CilAst.GetTypeCilByName("void")));
-            Visit_Runtime_Error(isVoid, cilTree,$"A dispatch on void");
+            Visit_Runtime_Error(isVoid, cilTree,"\"A dispatch on void\"");
             cilTree.ThreeDirInses.Add(new ArgExprCil(expr0));
             //cada parametro los anado al metodo puede que tenga sentido pasarlos al revez
 
@@ -344,7 +344,7 @@ namespace CmpProject
                     var isZero = new LocalCil($"_isZero{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(isZero);
                     cilTree.ThreeDirInses.Add(new NotEqualCil(isZero,valueRight,new HolderCil("0")));
-                    Visit_Runtime_Error(isZero,cilTree, $"line {parserRule.Start.Line} column {parserRule.Start.Column+1} Division by zero");
+                    Visit_Runtime_Error(isZero,cilTree, $"\"line {parserRule.Start.Line} column {parserRule.Start.Column+1} Division by zero\"");
                     cilTree.ThreeDirInses.Add(new DivCil(value, valueLeft, valueRight));
                     break;
                 case "*":
@@ -634,14 +634,14 @@ namespace CmpProject
                     cilTree.LocalCils.Add(isParam1NotInRange);
                     cilTree.ThreeDirInses.Add(new LenghtCil(Length,expr0));
                     cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam1NotInRange, Length, Params[0]));
-                    Visit_Runtime_Error(isParam1NotInRange,cilTree,$"line {parserRule.Start.Line} column {parserRule.Start.Column+1} Substring out of range");
+                    Visit_Runtime_Error(isParam1NotInRange,cilTree,$"\"line {parserRule.Start.Line} column {parserRule.Start.Column+1} Substring out of range\"");
                     var lastIndex= new LocalCil($"_lastIndex{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(lastIndex);
                     cilTree.ThreeDirInses.Add(new SumCil(lastIndex,Params[0],Params[1]));
                     var isParam2NotInRange = new LocalCil($"_isParam2InRange{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(isParam2NotInRange);
                     cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam2NotInRange, Length, lastIndex));
-                    Visit_Runtime_Error(isParam2NotInRange, cilTree, $"line {parserRule.Start.Line} column {parserRule.Start.Column + 1} Substring out of range");
+                    Visit_Runtime_Error(isParam2NotInRange, cilTree, $"\"line {parserRule.Start.Line} column {parserRule.Start.Column + 1} Substring out of range\"");
                     cilTree.ThreeDirInses.Add(new SubStringCil(value, expr0, Params[0], Params[1]));
                     break;
                 default:

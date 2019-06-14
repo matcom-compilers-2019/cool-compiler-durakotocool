@@ -3,7 +3,7 @@ class Main{
         iterative(4)
     };
     fact(i:Int):Int{
-        if (i=0) then 1 else i*fact(i-1) fi
+        if (i=1) then 1 else i*fact(i-1) fi
     };
     iterative(i:Int):Int{
         let f:Int<-1 in 

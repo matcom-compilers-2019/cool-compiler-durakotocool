@@ -17,6 +17,13 @@ namespace CmpProject
         public List<string> Data { get; set; }
         public List<string> Text { get; set; }  //Donde va el codigo
         public List<string> Functions { get; set; } //
-    }
+
+		internal void Add(MIPS mIPS)
+		{
+			Data.AddRange(mIPS.Data);
+			Text.AddRange(mIPS.Text);
+			Functions.AddRange(mIPS.Functions);
+		}
+	}
 }
 

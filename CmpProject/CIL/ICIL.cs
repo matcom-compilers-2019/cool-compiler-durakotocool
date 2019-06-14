@@ -74,7 +74,6 @@ namespace CmpProject.CIL
     }
     public interface IThreeDirIns
     {
-        MIPS ToMIPS(IFunctionCil function, GenerateToCil cil);
     }
     public interface IFeuturesCil:IVarCil
     {

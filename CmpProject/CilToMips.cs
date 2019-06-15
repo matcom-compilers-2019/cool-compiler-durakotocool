@@ -395,17 +395,29 @@ namespace CmpProject
         }
         public MIPS Visitor(EqualCil instance, IFunctionCil function, GenerateToCil cil)
         {
-            var lines = new List<string>(Utils.AcomodarVariables(instance.Y, instance.Z, function)){
-                    "seq $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
-                };
+            var lines = new List<string>(Utils.AcomodarVariables(instance.Y, function));
+            if (instance.Z is TypeCil)
+            {
+                lines.Add("lw $t1, ($t1)");
+                lines.Add($"la $t2, type_{instance.Z.Name}_name");
+            }
+            else
+                lines.AddRange(Utils.SaveToRegister(instance.Z, function, "t2"));
+            lines.Add("seq $t0, $t1, $t2");
             lines.AddRange(Utils.LoadFromRegister(instance.X, function, "t0"));
             return new MIPS() { Functions = lines };
         }
         public MIPS Visitor(NotEqualCil instance, IFunctionCil function, GenerateToCil cil)
         {
-            var lines = new List<string>(Utils.AcomodarVariables(instance.Y, instance.Z, function)){
-                    "sne $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
-                };
+            var lines = new List<string>(Utils.AcomodarVariables(instance.Y, function));
+            if (instance.Z is TypeCil)
+            {
+                lines.Add("lw $t1, ($t1)");
+                lines.Add($"la $t2, type_{instance.Z.Name}_name");
+            }
+            else
+                lines.AddRange(Utils.SaveToRegister(instance.Z, function, "t2"));
+            lines.Add("sne $t0, $t1, $t2");
             lines.AddRange(Utils.LoadFromRegister(instance.X, function, "t0"));
             return new MIPS() { Functions = lines };
         }

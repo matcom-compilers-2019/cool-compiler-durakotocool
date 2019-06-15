@@ -633,14 +633,14 @@ namespace CmpProject
                     var isParam1NotInRange = new LocalCil($"_isParam1InRange{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(isParam1NotInRange);
                     cilTree.ThreeDirInses.Add(new LenghtCil(Length,expr0));
-                    cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam1NotInRange, Length, Params[0]));
+                    cilTree.ThreeDirInses.Add(new MinorCil(isParam1NotInRange, Params[0], Length));
                     Visit_Runtime_Error(isParam1NotInRange,cilTree,$"\"line {parserRule.Start.Line} column {parserRule.Start.Column+1} Substring out of range\"");
                     var lastIndex= new LocalCil($"_lastIndex{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(lastIndex);
                     cilTree.ThreeDirInses.Add(new SumCil(lastIndex,Params[0],Params[1]));
                     var isParam2NotInRange = new LocalCil($"_isParam2InRange{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(isParam2NotInRange);
-                    cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam2NotInRange, Length, lastIndex));
+                    cilTree.ThreeDirInses.Add(new MinorCil(isParam2NotInRange, lastIndex, Length));
                     Visit_Runtime_Error(isParam2NotInRange, cilTree, $"\"line {parserRule.Start.Line} column {parserRule.Start.Column + 1} Substring out of range\"");
                     cilTree.ThreeDirInses.Add(new SubStringCil(value, expr0, Params[0], Params[1]));
                     break;
@@ -700,31 +700,31 @@ namespace CmpProject
         {
             switch (cilTree.Name)
             {
-                case "Object_abort":
+                case "Object$abort":
                     cilTree.ThreeDirInses.Add(new Halt());
                     return null;
-                case "Object_type_name":
+                case "Object$type_name":
                     var x_type_name = new LocalCil("x");
                     cilTree.LocalCils.Add(x_type_name);
                     cilTree.ThreeDirInses.Add(new Type_Name(x_type_name,cilTree.self));
                     return x_type_name;
-                case "Object_copy":
+                case "Object$copy":
                     var x_Object_copy = new LocalCil("x");
                     cilTree.LocalCils.Add(x_Object_copy);
                     cilTree.ThreeDirInses.Add(new Copy(x_Object_copy, cilTree.self));
                     return x_Object_copy;
-                case "IO_out_string":
+                case "IO$out_string":
                     cilTree.ThreeDirInses.Add(new Out_strCil(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self")));
                     return cilTree.self;
-                case "IO_out_int":
+                case "IO$out_int":
                     cilTree.ThreeDirInses.Add(new Out_intCil(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self")));
                     return cilTree.self;
-                case "IO_in_string":
+                case "IO$in_string":
                     var x_in_string = new LocalCil("x");
                     cilTree.LocalCils.Add(x_in_string);
                     cilTree.ThreeDirInses.Add(new In_strCil(x_in_string));
                     return x_in_string;
-                case "IO_in_int":
+                case "IO$in_int":
                     var x_in_int  = new LocalCil("x");
                     cilTree.LocalCils.Add(x_in_int);
                     cilTree.ThreeDirInses.Add(new In_intCil(x_in_int));

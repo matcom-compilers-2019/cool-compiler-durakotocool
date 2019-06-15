@@ -45,6 +45,7 @@ namespace CmpProject.CIL
     }
     public interface ITypeCil:IValuelCil
     {
+        ITypeCil inherit { get; set; }
         IFunctionTypeCil Init { get; set; }
         ISet<IAttributeCil> Attributes { get; set; }
         ISet<IFunctionTypeCil> Functions { get; set; }
@@ -65,6 +66,7 @@ namespace CmpProject.CIL
         Dictionary<string, int> localsDict { get; set; }
 		Dictionary<string, int> argsDict { get; set; }
 		IVarCil self { get; }
+        ILabelCil CreateLabel(string label);
     }
     public interface IArgCil:IVarCil
     {

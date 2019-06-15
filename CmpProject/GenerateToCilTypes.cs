@@ -27,6 +27,7 @@ namespace CmpProject
             foreach (var _class in parserRule._classes)
             {
                 var typeCil = new TypeCil(_class.type.Text,CilAst);
+                typeCil.inherit = CilAst.GetTypeCilByName(_class.father?.type.Text);
                 CilAst.TypeCils.Add(typeCil);
             }
         }

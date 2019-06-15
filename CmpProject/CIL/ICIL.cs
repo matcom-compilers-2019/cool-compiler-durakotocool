@@ -65,6 +65,7 @@ namespace CmpProject.CIL
         Dictionary<string, int> localsDict { get; set; }
 		Dictionary<string, int> argsDict { get; set; }
 		IVarCil self { get; }
+        ILabelCil CreateLabel(string label);
     }
     public interface IArgCil:IVarCil
     {

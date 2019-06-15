@@ -270,7 +270,10 @@ namespace CmpProject.CIL
             localsDict = new Dictionary<string, int>();
 			argsDict = new Dictionary<string, int>();
 		}
-        
+        public ILabelCil CreateLabel(string label)
+        {
+            return new LabelCil(label + ThreeDirInses.Count+"_"+Name);
+        }
         //Voy a cambiarlo
         public override string ToString()
         {
@@ -574,9 +577,7 @@ namespace CmpProject.CIL
 #region Jump
     class LabelCil :Ide,ILabelCil
     {
-        public LabelCil(string name) : base(name)
-        {
-        }
+        public LabelCil(string name) : base(name){}
         public override string ToString()
         {
             return Name;

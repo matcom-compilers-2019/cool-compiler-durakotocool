@@ -504,7 +504,29 @@ namespace CmpProject
             contextCil.Define(parserRule.idText);
             var Id = new LocalCil(contextCil.variables[parserRule.idText].Name);
             cilTree.LocalCils.Add(Id);
-            var value = Visit(parserRule.expression, cilTree, contextCil);
+            IHolderCil value;
+
+            if (parserRule.expression != null)
+            {
+                value = Visit(parserRule.expression, cilTree, contextCil);
+
+            }
+            else if (parserRule.type.Text == "Int")
+            {
+                value = CreateABasicType(cilTree, CilAst.Int);
+            }
+            else if (parserRule.type.Text == "String")
+            {
+                value = CreateABasicType(cilTree, CilAst.String);
+            }
+            else if (parserRule.type.Text == "Bool")
+            {
+                value = CreateABasicType(cilTree, CilAst.Bool);
+            }
+            else
+            {
+                value = Visit_void(cilTree);
+            }
             cilTree.ThreeDirInses.Add(new AssigCil(Id,value));
         }
         public IHolderCil Visit(CaseExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
@@ -589,19 +611,32 @@ namespace CmpProject
                     }
                     else
                     {
-                        if (typeTemp == GlobalContext.Int || typeTemp == GlobalContext.Bool||typeTemp==GlobalContext.String)
+                        if (typeTemp == GlobalContext.Int || typeTemp == GlobalContext.Bool)
                         {
                             init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), new ValuelCil("0")));
                         }
-                        else if (attributeTemp.Type == GlobalContext.String)
+                        else if (typeTemp == GlobalContext.String)
                         {
                             var valueS = new LocalCil($"_value{init.LocalCils.Count}");
                             init.LocalCils.Add(valueS);
+
                             var stringCool = "";
                             var varDataString = new VarCil($"s{CilAst.dataStringCils.Count}");
                             CilAst.dataStringCils.Add(new DataStringCil(varDataString, new StringCil(stringCool)));
                             init.ThreeDirInses.Add(new LoadCil(valueS, varDataString));
                             init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), valueS));
+                        }
+                        else if (attributeTemp.Type == GlobalContext.String)
+                        {
+                            init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), CreateABasicType(init, CilAst.String)));
+                        }
+                        else if (attributeTemp.Type == GlobalContext.Int)
+                        {
+                            init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), CreateABasicType(init,CilAst.Int)));
+                        }
+                        else if (attributeTemp.Type == GlobalContext.Bool)
+                        {
+                            init.ThreeDirInses.Add(new SetAttrCil(value, typeCilNew.GetAttributeCilsByCoolName(attributeTemp.ID), CreateABasicType(init, CilAst.Bool)));
                         }
                         else
                         {

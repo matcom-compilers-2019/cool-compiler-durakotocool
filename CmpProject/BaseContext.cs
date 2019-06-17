@@ -273,15 +273,6 @@ namespace CmpProject
         {
             types = new HashSet<IType>();
             Undefined=  CreateChildContext();
-            //Int=CreateChildContext("Int");
-            //Int.IsBasicType = true;
-            //String= CreateChildContext("String");
-            //String.IsBasicType = true;
-            //String.Define("lenght", Int, new Formal[] { });
-            //String.Define("concat", String,new Formal[1] {new Formal("s",String) });
-            //String.Define("substr",String,new Formal[2] { new Formal("i", Int),new Formal("l",Int) });
-            //Bool= CreateChildContext("Bool");
-            //Bool.IsBasicType = true;
             Self_Type = CreateChildContext(Object);
   
         }

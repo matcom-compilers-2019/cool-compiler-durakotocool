@@ -31,13 +31,13 @@ namespace CmpProject
 			//var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
 			//var streamReader = new StreamReader("Testing/Comparaciones.cl");
 			//var streamReader = new StreamReader("Testing/String.cl");
-            //var streamReader = new StreamReader("Testing/Expresion let.cl");
+            var streamReader = new StreamReader("Testing/Expresion let.cl");
             //var streamReader = new StreamReader("Testing/Tipos.cl");
             //var streamReader = new StreamReader("Testing/While.cl");
             //var streamReader = new StreamReader("Testing/Example.cl");
             //var streamReader = new StreamReader("Testing/Factorial.cl");
             //var streamReader = new StreamReader("Testing/Tipos.cl");
-            var streamReader = new StreamReader("Testing/Test de Cool.cl");
+            //var streamReader = new StreamReader("Testing/Test de Cool.cl");
             //var streamReader = new StreamReader("Testing/Basic Types.cl");
             #region Lexer
             var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader.ReadToEnd()));

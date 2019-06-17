@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,6 +41,7 @@ namespace CmpProject
                 if (globalContext.Bool.Name == parserRule.inherits.Text)
                     errorLogger.LogError($"El tipo {parserRule.type.Text} no puede heredar de Bool");
                 var inherits= globalContext.GetType(parserRule.inherits.Text);
+                type.Inherits = inherits;
                 if (inherits.Conform(type))
                 {
                     errorLogger.LogError("No se permite la herencia cíclica");

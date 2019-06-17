@@ -48,6 +48,7 @@ namespace CmpProject.CIL
     }
     public interface ITypeCil:IValuelCil
     {
+        int IndexOfPrecedence { get; set; }
         ITypeCil inherit { get; set; }
         IFunctionTypeCil Init { get; set; }
         ISet<IAttributeCil> Attributes { get; set; }

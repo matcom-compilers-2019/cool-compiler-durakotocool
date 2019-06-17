@@ -164,6 +164,7 @@ namespace CmpProject.CIL
         public  ISet<IFunctionTypeCil> Functions { get; set; }
         public  IFunctionTypeCil Init { get; set ; }
         public ITypeCil inherit { get; set; }
+        public int IndexOfPrecedence { get; set; }
 
         public TypeCil(string name,ICilAst cilAst):base(name)
         {

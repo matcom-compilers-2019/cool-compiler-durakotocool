@@ -132,7 +132,7 @@ TYPE				:MALETTER(INT|LETTER|'_')*;
 ID					:MILETTER(INT|LETTER|'_')*;
 STRING				: '"'('\\"'|.)*? '"' ;
 //'\v'
-WS					: (' '|'\n'|'\f'|'\t'|'\r')+->skip;
+WS					: (' '|'\n'|'\fr')+'|'\t'|'\->skip;
 COMMENTS			:(('--' (.)*?('\n'|EOF))|'(*'(.)*?'*)');
 //fragment KEYWORDS:IF|THEN|FI|WHILE|LOOP|POOL|LET|IN|CASE|OF|ESAC|INHERITS|ISVOID;
 

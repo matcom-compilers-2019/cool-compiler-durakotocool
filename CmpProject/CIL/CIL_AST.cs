@@ -48,7 +48,9 @@ namespace CmpProject.CIL
         public ISet<IFunctionCil> FunctionCils { get; set; }
         public ISet<IDataStringCil> dataStringCils { get; set; }
         public ITypeCil Object { get ; set; }
-
+        public ITypeCil Bool => GetTypeCilByName("Bool");
+        public ITypeCil String => GetTypeCilByName("String");
+        public ITypeCil Int => GetTypeCilByName("Int");
         public IFunctionCil void_init => FunctionCils.Single(t => t.Name == "void$Init");
 
         public CilAst()
@@ -451,7 +453,7 @@ namespace CmpProject.CIL
     class GetAttrCil:BinaryVarCil
     {
         //public IVarCil Y { get; set; }
-        public GetAttrCil(IVarCil x, IVarCil y, IHolderCil b) : base(x,y, b)
+        public GetAttrCil(IVarCil x, IHolderCil y, IHolderCil b) : base(x,y, b)
         {
         }
         public override string ToString()
@@ -467,7 +469,7 @@ namespace CmpProject.CIL
         }
         public override string ToString()
         {
-            return $"   SETATTR {X} {Y.Name} {Z}\n";
+            return $"   SETATTR {X} {Y.Name} {Z.Name}\n";
         }
     }
     #endregion

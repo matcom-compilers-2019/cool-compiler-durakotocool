@@ -17,9 +17,66 @@ namespace CmpProject
         public ClassContext IO { get; set; }
 
         public ClassContext Void { get; set; }
+        public ClassContext Int { get; set; }
+        public ClassContext Bool { get; set; }
+        public ClassContext String { get; set; }
         public MethodContext entry { get; set; }
         public BasicTypes(ProgramContext program,IGlobalContext globalContext)
         {
+            
+            //Tipo Int
+            Int = new ClassContext(program, 0);
+            Int.type = new CommonToken(42, "Int");
+            var value = new AttributeContext(new FeatureContext());
+            value.idText = "x";
+            value.decl = new DeclarationContext(program, 0);
+            value.decl.idText = "x";
+            value.decl.typeText = "Int";
+            value.decl.type = new CommonToken(42, "Int");
+
+            Int._features = new FeatureContext[1] { value};
+            //var value = new AttributeContext(new FeatureContext());
+            //value.= new CommonToken(42, "value");
+            //Tipo Bool
+            Bool = new ClassContext(program, 0);
+            Bool.type = new CommonToken(42, "Bool");
+            Bool._features = new FeatureContext[1] { value };
+            //Tipo String
+            String = new ClassContext(program, 0);
+            String.type = new CommonToken(42, "String");
+            var lenght = new MethodContext(new FeatureContext());
+            lenght.methodName = new CommonToken(42, "lenght");
+            lenght.TypeReturn = new CommonToken(42, "Int");
+            lenght.idText = "lenght";
+            lenght.typeText = "String";
+            lenght._formals = new FormalContext[] { };
+            lenght.Parent = String;
+            var concat = new MethodContext(new FeatureContext());
+            concat.methodName = new CommonToken(42, "concat");
+            concat.TypeReturn = new CommonToken(42, "String");
+            concat.idText = "concat";
+            concat.typeText = "String";
+            var str_x = new FormalContext(program, 0);
+            str_x.idText = "x";
+            str_x.typeText = "String";
+            concat._formals = new FormalContext[1] {str_x };
+            concat.Parent = String;
+            var substr = new MethodContext(new FeatureContext());
+            substr.methodName = new CommonToken(42, "substr");
+            substr.TypeReturn = new CommonToken(42, "String");
+            substr.idText = "substr";
+            substr.typeText = "String";
+            var int_i = new FormalContext(program, 0);
+            int_i.idText = "i";
+            int_i.typeText = "Int";
+            var int_l = new FormalContext(program, 0);
+            int_l.idText = "l";
+            int_l.typeText = "Int";
+            substr._formals = new FormalContext[2] { int_i,int_l};
+            substr.Parent = String;
+            String._features = new FeatureContext[4] { value,concat, lenght,substr };
+
+            //Object
             Object = new ClassContext(program, 0);
             Object.type = new CommonToken(42, "Object");
             var abort = new MethodContext(new FeatureContext());
@@ -27,6 +84,7 @@ namespace CmpProject
             abort.TypeReturn = new CommonToken(42, "Object");
             abort.idText = "abort";
             abort.typeText = "Object";
+     
             abort._formals = new FormalContext[] { };
             abort.Parent = Object;
             var type_name= new MethodContext(new FeatureContext());

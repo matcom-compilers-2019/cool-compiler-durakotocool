@@ -13,6 +13,9 @@ namespace CmpProject.CIL
     public interface ICilAst:ICil
     {
         ITypeCil Object { get; set; }
+        ITypeCil Bool { get; }
+        ITypeCil String { get;}
+        ITypeCil Int { get; }
         ISet<ITypeCil> TypeCils { get; set; }
 
         IFunctionCil void_init { get; }

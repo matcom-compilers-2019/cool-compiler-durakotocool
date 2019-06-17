@@ -167,6 +167,7 @@ public partial class COOLgrammarParser : Parser {
 
 		public ClassContext father;
 		public IToken type;
+
 		public IToken inherits;
 		public FeatureContext _feature;
 		public IList<FeatureContext> _features = new List<FeatureContext>();

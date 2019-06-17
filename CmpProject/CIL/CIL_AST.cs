@@ -397,6 +397,16 @@ namespace CmpProject.CIL
             return $"   {X}={Y.Name}=={Z.Name}\n";
         }
     }//
+    class EqualStringCil : BinaryVarCil
+    {
+        public EqualStringCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)
+        {
+        }
+        public override string ToString()
+        {
+            return $"   {X}=strEqual {Y.Name} {Z.Name}\n";
+        }
+    }//
     class NotEqualCil : BinaryVarCil
     {
         public NotEqualCil(IVarCil x, IHolderCil y, IHolderCil z) : base(x, y, z)

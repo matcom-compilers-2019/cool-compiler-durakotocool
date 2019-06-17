@@ -68,7 +68,7 @@ letRule locals[IType computedType]: declaretion= declaration ','let= letRule				
 			: id= ID ':' type= TYPE ( '<-' expression=expr )? {$idText=($id).Text; $typeText=($type).Text;};
       branch
 	  locals[string idText,string typeText,IType computedType]
-			: id= ID ':' type= TYPE '=>'  expression=expr     {$idText=($id).Text; $typeText=($type).Text;};
+			: id= ID ':' type= TYPE '=>'  expression=expr ';'     {$idText=($id).Text; $typeText=($type).Text;};
    expr_list
 			: (expresions+=expr( ',' expressions+= expr)*)?;
 

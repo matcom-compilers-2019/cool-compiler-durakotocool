@@ -120,6 +120,14 @@ namespace CmpProject
                     mipsResult.Data.Add($"\ttype_{t.Name}${f.CilName}: .word {f.Function.Name}");
                 }
 				mipsResult.Data.Add($"\ttype_{t.Name}_count_methods: .word {t.Functions.Count}");
+                string parent;
+                if (t.inherit != null)
+                {
+                    parent = $"type_{ t.inherit.Name}_parent";
+                }
+                else
+                    parent = "0";
+                mipsResult.Data.Add($"\ttype_{t.Name}_parent: .word {parent}");
 				mipsResult.Data.Add($"\ttype_{t.Name}_name: .asciiz \"{t.Name}\"");
             }
 			var entry = functions.Single(x => x.Name == "entry");
@@ -141,11 +149,66 @@ namespace CmpProject
                 var current = functionsMIPS[i];
                 mipsResult.Add(current);
             }
-			mipsResult.Functions.AddRange(CreateLengthFunction());
-			mipsResult.Functions.AddRange(CreateConcatFunction());
+            mipsResult.Functions.AddRange(CreateEqualFunction());
+            mipsResult.Functions.AddRange(CreateConformFunction());
+            mipsResult.Functions.AddRange(CreateLengthFunction());
+            mipsResult.Functions.AddRange(CreateConcatFunction());
 			mipsResult.Functions.AddRange(CreateSubstringFunction());
 			return mipsResult;
             //var functionsMIPS = Visitor(functions.ToList()[17]);
+        }
+        private List<string> CreateConformFunction(){
+            var lines = new List<string>(){
+                "\n\r",
+                "conformFunctionStart:",
+                "move $v1,$ra",
+                //"la $a0, myType",
+                //"la $a1, type_X_parent",
+                "ll_loop:",
+                "move $a2, $a1",
+                "addi $a1, $a1, 4",
+                "jal equalFunctionStart",
+                "move $a1, $a2",
+                "bnez  $v0, ll_true",
+                "lw $a1,($a1)",
+                "beqz $a1, ll_false",
+                "j ll_loop",
+                "ll_true:",
+                "li $v0, 0",
+                "jr $v1",
+                "ll_false:",
+                "li $v0, 1",
+                "jr $v1"
+            };
+            return lines;
+        }
+        private List<string> CreateEqualFunction(){
+            var lines = new List<string>(){
+                "\n\r",
+                "equalFunctionStart:",
+                "beqz $a0, equalCheckZero",
+                "bnez $a1, loop_StrComp",
+                "li $v0, 0",
+                "jr $ra",
+                "loop_StrComp:",
+                "lb $t0, ($a0)",
+                "lb $t1, ($a1)",
+                "bne $t0,$t1, strComp_false",
+                "beqz $t0, strComp_true",
+                "addi $a0,$a0,1",
+                "addi $a1,$a1,1",
+                "j loop_StrComp",
+                "strComp_true:",
+                "li $v0, 1",
+                "jr $ra",
+                "strComp_false:",
+                "li $v0, 0",
+                "jr $ra",
+                "equalCheckZero:",
+                "seq $v0, $a1, 0",
+                "jr $ra"
+            };
+            return lines;
         }
 		private List<string> CreateLengthFunction()
 		{
@@ -278,6 +341,8 @@ namespace CmpProject
                 return Visitor(x as DivCil, function, cil);
             else if (x is EqualCil)
                 return Visitor(x as EqualCil, function, cil);
+            else if (x is EqualStringCil)
+                return Visitor(x as EqualStringCil, function, cil);
             else if (x is NotEqualCil)
                 return Visitor(x as NotEqualCil, function, cil);
             else if (x is MinorCil)
@@ -391,6 +456,15 @@ namespace CmpProject
                     "div $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
             lines.AddRange(Utils.LoadFromRegister(instance.X, function, "t0"));
+            return new MIPS() { Functions = lines };
+        }
+        public MIPS Visitor(EqualStringCil instance, IFunctionCil function, GenerateToCil cil)
+        {
+            var lines = new List<string>();
+            lines.AddRange(Utils.SaveToRegister(instance.Y, function, "a0"));
+            lines.AddRange(Utils.SaveToRegister(instance.Z, function, "a1"));
+            lines.Add("jal equalFunctionStart");
+            lines.AddRange(Utils.LoadFromRegister(instance.X, function, "v0"));
             return new MIPS() { Functions = lines };
         }
         public MIPS Visitor(EqualCil instance, IFunctionCil function, GenerateToCil cil)
@@ -556,7 +630,7 @@ namespace CmpProject
                 var lines = new List<string>(Utils.SaveToRegister(instance.Y, function, "t0"))
                 {
                     $"lw $t0, ($t0)",	//cargo la direccion del puntero (que es donde esta la direccion del nombre)
-					$"add $t0,$t0,-4",	//en -4 esta la cantidad de metodos
+					$"add $t0,$t0,-8",	//en -4 esta la cantidad de metodos
 					$"lw $t1, ($t0)",	//cargo la cantidad de metodos
 					$"mul $t1,$t1,-4",	//desplazamiento hasta el primer metodo
 					$"add $t0, $t0, $t1", //la direccion del primer metodo
@@ -713,7 +787,14 @@ namespace CmpProject
         #region IsConform
         public MIPS Visitor(IsNotConformCil instance, IFunctionCil function, GenerateToCil cil)
         {
-            return null;
+            var lines = new List<string>();
+            lines.Add($"la $a0, type_{instance.Z.Name}_name");
+            lines.AddRange(Utils.SaveToRegister(instance.Y, function, "t0"));
+            lines.Add("lw $t0, ($t0)");
+            lines.Add("addi $a1, $t0, -4");
+            lines.Add("jal conformFunctionStart");
+            lines.AddRange(Utils.LoadFromRegister(instance.X, function, "v0"));
+            return new MIPS() { Functions = lines };
         }
         #endregion
         #region Object

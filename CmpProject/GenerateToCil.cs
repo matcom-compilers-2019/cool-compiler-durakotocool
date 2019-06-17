@@ -325,7 +325,10 @@ namespace CmpProject
                     cilTree.ThreeDirInses.Add(new Minor_EqualCil(value, valueLeft, valueRight));
                     break;
                 case "=":
-                    cilTree.ThreeDirInses.Add(new EqualCil(value, valueLeft, valueRight));
+                    if (parserRule.left.computedType == GlobalContext.String)
+                        cilTree.ThreeDirInses.Add(new EqualStringCil(value, valueLeft, valueRight));
+                    else
+                        cilTree.ThreeDirInses.Add(new EqualCil(value, valueLeft, valueRight));
                     break;
                 default:
                     break;
@@ -384,8 +387,8 @@ namespace CmpProject
             cilTree.LocalCils.Add(TypeValue);
             cilTree.ThreeDirInses.Add(new TypeOf(TypeValue, valueExpr));
             cilTree.ThreeDirInses.Add(new EqualCil(value,TypeValue,CilAst.GetTypeCilByName("void")));
-            return value;
-        }
+            return CreateABasicTypeWhitVal(cilTree,CilAst.Bool,value);
+        } 
         public IHolderCil Visit(NegExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
             
@@ -681,7 +684,7 @@ namespace CmpProject
                     cilTree.ThreeDirInses.Add(new SumCil(lastIndex, param1, param2));
                     var isParam2NotInRange = new LocalCil($"_isParam2InRange{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(isParam2NotInRange);
-                    cilTree.ThreeDirInses.Add(new MinorCil(isParam2NotInRange, lastIndex, Length));
+                    cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam2NotInRange, lastIndex, Length));
                     Visit_Runtime_Error_whit_Cond(isParam2NotInRange, cilTree, $"\"Substring out of range\"");
                     cilTree.ThreeDirInses.Add(new SubStringCil(value, self, param1,param2));
                     return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("String"),value);

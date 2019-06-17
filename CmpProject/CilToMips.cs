@@ -141,11 +141,40 @@ namespace CmpProject
                 var current = functionsMIPS[i];
                 mipsResult.Add(current);
             }
-			mipsResult.Functions.AddRange(CreateLengthFunction());
-			mipsResult.Functions.AddRange(CreateConcatFunction());
+            mipsResult.Functions.AddRange(CreateEqualFunction());
+            mipsResult.Functions.AddRange(CreateLengthFunction());
+            mipsResult.Functions.AddRange(CreateConcatFunction());
 			mipsResult.Functions.AddRange(CreateSubstringFunction());
 			return mipsResult;
             //var functionsMIPS = Visitor(functions.ToList()[17]);
+        }
+        private List<string> CreateEqualFunction(){
+            var lines = new List<string>(){
+                "\n\r",
+                "equalFunctionStart:",
+                "beqz $a0, equalCheckZero",
+                "bnez $a1, loop_StrComp",
+                "li $v0, 0",
+                "jr $ra",
+                "loop_StrComp:",
+                "lb $t0, ($a0)",
+                "lb $t1, ($a1)",
+                "bne $t0,$t1, strComp_false",
+                "beqz $t0, strComp_true",
+                "addi $a0,$a0,1",
+                "addi $a1,$a1,1",
+                "j loop_StrComp",
+                "strComp_true:",
+                "li $v0, 1",
+                "jr $ra",
+                "strComp_false:",
+                "li $v0, 0",
+                "jr $ra",
+                "equalCheckZero:",
+                "seq $v0, $a1, 0",
+                "jr $ra"
+            };
+            return lines;
         }
 		private List<string> CreateLengthFunction()
 		{
@@ -278,6 +307,8 @@ namespace CmpProject
                 return Visitor(x as DivCil, function, cil);
             else if (x is EqualCil)
                 return Visitor(x as EqualCil, function, cil);
+            else if (x is EqualStringCil)
+                return Visitor(x as EqualStringCil, function, cil);
             else if (x is NotEqualCil)
                 return Visitor(x as NotEqualCil, function, cil);
             else if (x is MinorCil)
@@ -391,6 +422,15 @@ namespace CmpProject
                     "div $t0, $t1, $t2" //Guarda en t0 la suma de t1 y t2
                 };
             lines.AddRange(Utils.LoadFromRegister(instance.X, function, "t0"));
+            return new MIPS() { Functions = lines };
+        }
+        public MIPS Visitor(EqualStringCil instance, IFunctionCil function, GenerateToCil cil)
+        {
+            var lines = new List<string>();
+            lines.AddRange(Utils.SaveToRegister(instance.Y, function, "a0"));
+            lines.AddRange(Utils.SaveToRegister(instance.Z, function, "a1"));
+            lines.Add("jal equalFunctionStart");
+            lines.AddRange(Utils.LoadFromRegister(instance.X, function, "v0"));
             return new MIPS() { Functions = lines };
         }
         public MIPS Visitor(EqualCil instance, IFunctionCil function, GenerateToCil cil)

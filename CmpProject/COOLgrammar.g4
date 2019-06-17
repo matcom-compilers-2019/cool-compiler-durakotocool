@@ -130,7 +130,7 @@ fragment LETTER		:MALETTER|MILETTER;
 INTEGER				:INT+;
 TYPE				:MALETTER(INT|LETTER|'_')*;
 ID					:MILETTER(INT|LETTER|'_')*;
-STRING				: '"'('\\"'|.)*? '"' ;
+STRING				: '"' ( '\\"' | '\\\\' | . )*? '"' ;
 //'\v'
 WS					: (' '|'\n'|'\f'|'\t'|'\r')+ ->skip;
 COMMENTS			:(('--' (.)*?('\n'|EOF))|'(*'(.)*?'*)')->skip;

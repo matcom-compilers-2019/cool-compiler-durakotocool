@@ -140,6 +140,8 @@ namespace CmpProject
         {
             if (a is Undefines)
                 return a;
+            else if (a is SelfType self)
+                return privateJoin(self.type);
             else
                 return privateJoin(a);
 
@@ -220,6 +222,7 @@ namespace CmpProject
                 return type.Conform(a);
             }
         }
+
     }
    public class ObjectContext : IObjectContext<IVar,IVar>
     {

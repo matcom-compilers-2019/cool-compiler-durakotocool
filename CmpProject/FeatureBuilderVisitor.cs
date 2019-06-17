@@ -40,7 +40,11 @@ namespace CmpProject
                     errorLogger.LogError($"El tipo {parserRule.type.Text} no puede heredar de String");
                 if (globalContext.Bool.Name == parserRule.inherits.Text)
                     errorLogger.LogError($"El tipo {parserRule.type.Text} no puede heredar de Bool");
-                type.Inherits = globalContext.GetType(parserRule.inherits.Text);
+                var inherits= globalContext.GetType(parserRule.inherits.Text);
+                if (inherits.Conform(type))
+                {
+                    errorLogger.LogError("No se permite la herencia cíclica");
+                }
             }
             foreach (var item in parserRule._features)
             {
@@ -112,14 +116,19 @@ namespace CmpProject
         {
             var stack = new Stack<ClassContext>();
             for (int i = 0; i < classes.Count; i++)
-                DFS_Visit(stack, classes[i]);
+                DFS_Visit(stack, classes[i],classes.Count,0);
             return stack.Reverse().ToArray();
         }
-        private void DFS_Visit(Stack<ClassContext>stack,ClassContext @class)
+        private void DFS_Visit(Stack<ClassContext>stack,ClassContext @class,int max, int current)
         {
-            if (@class==null|| stack.Contains(@class))
+            if (current > max)
+            {
+                errorLogger.LogError("No se permite la herencia cíclica");
                 return;
-            DFS_Visit(stack,@class.father);
+            }
+            if (@class == null || stack.Contains(@class))
+                return;
+            DFS_Visit(stack, @class.father,max,current+1);
             stack.Push(@class);
         }
     }

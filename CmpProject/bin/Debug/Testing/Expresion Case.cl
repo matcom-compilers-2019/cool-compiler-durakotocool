@@ -1,5 +1,5 @@
 class Main{
-  main():Int{1};
+  main():Int{1}; 
 };
 class X inherits A{
   c:A<-new SELF_TYPE;
@@ -28,3 +28,6 @@ class C inherits B
 };
 class D inherits X{
 };
+(*class E inherits D{
+
+};*)

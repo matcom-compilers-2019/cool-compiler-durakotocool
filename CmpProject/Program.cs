@@ -23,14 +23,14 @@ namespace CmpProject
             //var streamReader = new StreamReader("Testing/Bool.cool");
             //var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
             //var streamReader = new StreamReader("Testing/String.cl");
-			//var streamReader = new StreamReader("Testing/Tipos.cl");
-			//var streamReader = new StreamReader("Testing/Dispatch.cl");
-			//var streamReader = new StreamReader("Testing/ZAHUIS.cl");
-			//var streamReader = new StreamReader("Testing/Expresion Case.cl");
-			//var streamReader = new StreamReader("Testing/Bool.cool");
-			//var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
-			//var streamReader = new StreamReader("Testing/Comparaciones.cl");
-			//var streamReader = new StreamReader("Testing/String.cl");
+            //var streamReader = new StreamReader("Testing/Tipos.cl");
+            //var streamReader = new StreamReader("Testing/Dispatch.cl");
+            //var streamReader = new StreamReader("Testing/ZAHUIS.cl");
+            //var streamReader = new StreamReader("Testing/Expresion Case.cl");
+            //var streamReader = new StreamReader("Testing/Bool.cool");
+            //var streamReader = new StreamReader("Testing/Nuevo tipo.cl");
+            //var streamReader = new StreamReader("Testing/Comparaciones.cl");
+            //var streamReader = new StreamReader("Testing/String.cl");
             //var streamReader = new StreamReader("Testing/Expresion let.cl");
             //var streamReader = new StreamReader("Testing/Tipos.cl");
             //var streamReader = new StreamReader("Testing/While.cl");
@@ -106,12 +106,12 @@ namespace CmpProject
             mips.Text.ForEach(x => streamWriter.WriteLine(x));
             streamWriter.WriteLine("##-----functions-----");
             mips.Functions.ForEach(x => streamWriter.WriteLine(x));
-            Console.WriteLine(".data");
-            mips.Data.ForEach(x => Console.WriteLine(x));
-            Console.WriteLine(".text");
-            mips.Text.ForEach(x => Console.WriteLine(x));
-            Console.WriteLine("##-----functions-----");
-            mips.Functions.ForEach(x => Console.WriteLine(x));
+            //Console.WriteLine(".data");
+            //mips.Data.ForEach(x => Console.WriteLine(x));
+            //Console.WriteLine(".text");
+            //mips.Text.ForEach(x => Console.WriteLine(x));
+            //Console.WriteLine("##-----functions-----");
+            //mips.Functions.ForEach(x => Console.WriteLine(x));
             streamWriter.Close();
             #endregion
         }

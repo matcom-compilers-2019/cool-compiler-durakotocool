@@ -28,6 +28,8 @@ namespace CmpProject
             {
                 var typeCil = new TypeCil(_class.type.Text,CilAst);
                 typeCil.inherit = CilAst.GetTypeCilByName(_class.father?.type.Text);
+                if (typeCil.inherit != null)
+                    typeCil.IndexOfPrecedence = 1 + typeCil.inherit.IndexOfPrecedence;
                 CilAst.TypeCils.Add(typeCil);
             }
         }

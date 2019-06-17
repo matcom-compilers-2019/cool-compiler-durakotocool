@@ -259,9 +259,9 @@ namespace CmpProject
    {
         public ISet<IType> types { get; }
         public IType Undefined { get; }
-        public IType Int { get; }
-        public IType String { get; }
-        public IType Bool { get; }
+        public IType Int { get; set; }
+        public IType String { get; set; }
+        public IType Bool { get; set; }
         public IType Object { get; set; }
         public IType Self_Type { get; }
 
@@ -273,25 +273,8 @@ namespace CmpProject
         {
             types = new HashSet<IType>();
             Undefined=  CreateChildContext();
-            Int=CreateChildContext("Int");
-            Int.IsBasicType = true;
-            String= CreateChildContext("String");
-            String.IsBasicType = true;
-            String.Define("lenght", Int, new Formal[] { });
-            String.Define("concat", String,new Formal[1] {new Formal("s",String) });
-            String.Define("substr",String,new Formal[2] { new Formal("i", Int),new Formal("l",Int) });
-            Bool= CreateChildContext("Bool");
-            Bool.IsBasicType = true;
-            //Object= CreateChildContext("Object");
             Self_Type = CreateChildContext(Object);
-            //Object.Define("abort", Object, new Formal[] { });
-            //Object.Define("type_name", String, new Formal[] { });
-            //Object.Define("copy", Self_Type, new Formal[] { });
-            //IO = CreateChildContext("IO");
-            //IO.Define("out_string", Self_Type, new Formal[1] { new Formal("x", String) });
-            //IO.Define("out_int", Self_Type, new Formal[1] { new Formal("x", Int) });
-            //IO.Define("in_string", String, new Formal[] { });
-            //IO.Define("in_int", Int, new Formal[] { });
+  
         }
         public IType CreateChildContext(string typeName)
         {
@@ -305,6 +288,12 @@ namespace CmpProject
                 IO = type;
             else if (typeName == "Main")
                 Main = type;
+            else if (typeName == "Int")
+                Int = type;
+            else if (typeName == "String")
+                String = type;
+            else if (typeName == "Bool")
+                Bool = type;
             return type;
         }
         public IType CreateChildContext(IType typeName)

@@ -35,10 +35,6 @@ namespace CmpProject
     {
         K Visit(T parserRule, G cilTree,IContextCil contextCil);
     }
-    interface IVisitorString<T, G, K> where T : ParserRuleContext where G : ICil where K : IHolderCil
-    {
-        K VisitString(T parserRule, G cilTree, IContextCil contextCil);
-    }
     interface IVisitorCtor
     {
         void Visit();

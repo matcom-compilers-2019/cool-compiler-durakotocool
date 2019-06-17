@@ -14,11 +14,21 @@ class A
 };
 class B inherits A
 {
-  a:Int<-{2; 3;7+3;};
-  sum(p1:Int,p2:Int):Int{ (let a:Int<-(2+3),b:Int<-0 in (let a:Int<-5,c:Int<-(let a:Int<-0,b:Int<-1 in a+b) in a+b+c)+a)+a};
+  (*a:Int<-{2; 3;7+3;};
+  sum(p1:Int,p2:Int):Int{ (let a:Int<-(2+3),b:Int<-0 in (let a:Int<-5,c:Int<-(let a:Int<-0,b:Int<-1 in a+b) in a+b+c)+a)+a};*)
 
 };
 class C inherits B
 {
-   
+  d:Int;
+  e:String;
+  f:Bool;
+    letsito():A{
+      let 
+        a:A,
+        b:Int,
+        c:A<-new A
+        in 
+        a
+    };
 };

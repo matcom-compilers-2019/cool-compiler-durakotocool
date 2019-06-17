@@ -1,5 +1,5 @@
 class Main{
-  main():Int{1};
+  main():Int{1}; 
 };
 class X inherits A{
   c:A<-new SELF_TYPE;
@@ -17,7 +17,7 @@ class B inherits A
     case new C of 
       a:A=>new A 
       b:B=>new B 
-      c:X=>c 
+      c:X=>(let c:X<-new X in c)
       d:D=>new D
     esac
   };
@@ -26,5 +26,8 @@ class C inherits B
 {
    
 };
-class D{
+class D inherits X{
 };
+(*class E inherits D{
+
+};*)

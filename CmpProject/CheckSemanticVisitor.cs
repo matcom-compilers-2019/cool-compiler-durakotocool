@@ -92,7 +92,7 @@ namespace CmpProject
             foreach (var formal in parserRuleContext._formals)
                 Visit(formal,context);
             //Porque los tipo IO y Object no tienen implementacion
-            if (type==globalContext.IO||type==globalContext.Object)
+            if (type==globalContext.IO||type==globalContext.Object||type==globalContext.Int|| type == globalContext.String)
                 return;
             //Visito el cuerpo del metodo
             Visit(parserRuleContext.exprBody,context);

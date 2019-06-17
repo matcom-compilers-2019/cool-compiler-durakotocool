@@ -68,7 +68,7 @@ letRule locals[IType computedType]: declaretion= declaration ','let= letRule				
 			: id= ID ':' type= TYPE ( '<-' expression=expr )? {$idText=($id).Text; $typeText=($type).Text;};
       branch
 	  locals[string idText,string typeText,IType computedType]
-			: id= ID ':' type= TYPE '=>'  expression=expr     {$idText=($id).Text; $typeText=($type).Text;};
+			: id= ID ':' type= TYPE '=>'  expression=expr ';'     {$idText=($id).Text; $typeText=($type).Text;};
    expr_list
 			: (expresions+=expr( ',' expressions+= expr)*)?;
 
@@ -132,7 +132,6 @@ TYPE				:MALETTER(INT|LETTER|'_')*;
 ID					:MILETTER(INT|LETTER|'_')*;
 STRING				: '"'('\\"'|.)*? '"' ;
 //'\v'
-WS					: (' '|'\n'|'\f'|'\t'|'\r')+->skip;
-COMMENTS			:(('--' (.)*?('\n'|EOF))|'(*'(.)*?'*)');
+WS					: (' '|'\n'|'\f'|'\t'|'\r')+ ->skip;
+COMMENTS			:(('--' (.)*?('\n'|EOF))|'(*'(.)*?'*)')->skip;
 //fragment KEYWORDS:IF|THEN|FI|WHILE|LOOP|POOL|LET|IN|CASE|OF|ESAC|INHERITS|ISVOID;
-

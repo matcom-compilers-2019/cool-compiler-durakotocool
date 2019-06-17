@@ -7,7 +7,7 @@ using static COOLgrammarParser;
 using CmpProject.CIL;
 namespace CmpProject
 {
-    class GenerateToCilFeatures:IVisitorCil<ClassContext, ITypeCil>,
+    public class GenerateToCilFeatures:IVisitorCil<ClassContext, ITypeCil>,
     IVisitorCilWhitContext<FeatureContext, ITypeCil>,
     IVisitorCil<AttributeContext, ITypeCil>,
     IVisitorCil<MethodContext, ITypeCil>
@@ -18,7 +18,7 @@ namespace CmpProject
         ClassContext type { get; set; }
         public IFunctionCil functionCil { get; set; }
         public BasicTypes basicTypes { get; set; }
-        public GenerateToCilFeatures(GenerateToCilTypes generateToCilTypes)
+        internal GenerateToCilFeatures(GenerateToCilTypes generateToCilTypes)
         {
             basicTypes = generateToCilTypes.basicTypes;
             GlobalContext = generateToCilTypes.GlobalContext;
@@ -69,20 +69,15 @@ namespace CmpProject
         }
         public void Visit(AttributeContext parserRule, ITypeCil cilTree)
         {
-            //cilTree.AddAttr(new AttributeCil(type.type.Text, parserRule.idText, CilAst.GetTypeCilByName(parserRule.typeText)));
             cilTree.AddAttr(new AttributeCil(type.type.Text, parserRule.idText));
         }
         public void Visit(MethodContext parserRule, ITypeCil cilTree)
         {
             //Creo la funcion e cil y la se anade al CilAst
-            //var function = CilAst.CreateFunctionCil(type.type.Text, parserRule.idText, CilAst.GetTypeCilByName(parserRule.typeText));
             var function = CilAst.CreateFunctionCil(type.type.Text, parserRule.idText);
-
             //Le hago referencia al tipo correspondiente
             //La al anadirla ya hay una funcion definida con el mismo nombre se le cambia el nombre de la funcionCil por el nuevo
-            //cilTree.AddFunc(new FunctionTypeCil(type.type.Text, parserRule.idText,function,CilAst.GetTypeCilByName(parserRule.typeText)));
-            cilTree.AddFunc(new FunctionTypeCil(type.type.Text, parserRule.idText,function));
-            //}
+            cilTree.AddFunc(new FunctionTypeCil(type.type.Text, parserRule.idText,function));   
         }
     }
 }

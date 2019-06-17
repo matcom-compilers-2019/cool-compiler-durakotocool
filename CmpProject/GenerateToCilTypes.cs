@@ -8,14 +8,9 @@ using static COOLgrammarParser;
 
 namespace CmpProject
 {
-    class GenerateToCilTypes:IVisitor<ProgramContext>
-    //,IVisitorCil<ClassContext, ITypeCil>,
-    //IVisitorCilWhitContext<FeatureContext, ITypeCil>,
-    //IVisitorCil<AttributeContext, ITypeCil>,
-    //IVisitorCil<MethodContext, ITypeCil>
+    internal class GenerateToCilTypes:IVisitor<ProgramContext>
     {
         public ICilAst CilAst { get; set; }
-
         public IGlobalContext GlobalContext;
         ClassContext type { get; set; }
         public IFunctionCil functionCil { get; set; }
@@ -32,8 +27,10 @@ namespace CmpProject
             foreach (var _class in parserRule._classes)
             {
                 var typeCil = new TypeCil(_class.type.Text,CilAst);
+                typeCil.inherit = CilAst.GetTypeCilByName(_class.father?.type.Text);
+                if (typeCil.inherit != null)
+                    typeCil.IndexOfPrecedence = 1 + typeCil.inherit.IndexOfPrecedence;
                 CilAst.TypeCils.Add(typeCil);
-                //Visit(_class, typeCil);
             }
         }
         public void Visit(MethodContext parserRule, ITypeCil cilTree)

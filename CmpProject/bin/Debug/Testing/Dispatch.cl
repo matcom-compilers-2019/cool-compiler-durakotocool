@@ -31,7 +31,11 @@ class B inherits A
 };
 class C inherits B
 {
-   sum(p1:Int,p2:Int):Int{ new C@B.sum(p1,p2)};
+   sum(p1:Int,p2:Int):Int{ new C.sum(p1,p2)};
    pacata():Strint{type_name().concat("op")};
-   tumba(a:A):Int{ b.sum(1,1) };
+   tumba(a:A):Int{ b@A.sum(1,1) };
+};
+class U{
+
+  algo():SELF_TYPE{ copy()};
 };

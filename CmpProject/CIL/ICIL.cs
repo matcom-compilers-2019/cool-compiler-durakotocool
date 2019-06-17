@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +13,16 @@ namespace CmpProject.CIL
     public interface ICilAst:ICil
     {
         ITypeCil Object { get; set; }
+        ITypeCil Bool { get; }
+        ITypeCil String { get;}
+        ITypeCil Int { get; }
         ISet<ITypeCil> TypeCils { get; set; }
+
+        IFunctionCil void_init { get; }
         ISet<IDataStringCil> dataStringCils { get; set; }
         ISet<IFunctionCil> FunctionCils { get; set; }
         ITypeCil GetTypeCilByName(string Name);
+        ITypeCil GetTypeCilByName(string Name, ITypeCil typeCil);
         //devuelve la funcion por su nombre
         IFunctionCil GetFunctionCilsByName(string Name);
         IFunctionCil CreateFunctionCil(string Name, string CilName);
@@ -42,6 +48,8 @@ namespace CmpProject.CIL
     }
     public interface ITypeCil:IValuelCil
     {
+        int IndexOfPrecedence { get; set; }
+        ITypeCil inherit { get; set; }
         IFunctionTypeCil Init { get; set; }
         ISet<IAttributeCil> Attributes { get; set; }
         ISet<IFunctionTypeCil> Functions { get; set; }
@@ -51,6 +59,8 @@ namespace CmpProject.CIL
         //devuelve la funcion por su nombre original en cool
         IFunctionTypeCil GetFunctionCilsByCoolName(string CoolName);
         IAttributeCil GetAttributeCilsByCoolName(string CoolName);
+        int GetIndexAttributeCilsByCoolName(string CoolName);
+
     }
     public interface IFunctionCil:IFeuturesCil
     {
@@ -58,6 +68,9 @@ namespace CmpProject.CIL
         ISet<ILocalCil> LocalCils { get; set; }
         ISet<IThreeDirIns> ThreeDirInses { get; set; }
         Dictionary<string, int> localsDict { get; set; }
+		Dictionary<string, int> argsDict { get; set; }
+		IVarCil self { get; }
+        ILabelCil CreateLabel(string label);
     }
     public interface IArgCil:IVarCil
     {
@@ -69,7 +82,6 @@ namespace CmpProject.CIL
     }
     public interface IThreeDirIns
     {
-        MIPS ToMIPS(IFunctionCil function, COOLgrammarParser.ProgramContext program);
     }
     public interface IFeuturesCil:IVarCil
     {

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="CmpProject.CIL.ICil" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.ICilAst" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAwAAAAAAAAAAAAAAAAAAAwgAAAABA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IIde" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IHolderCil" Collapsed="true">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IValuelCil" Collapsed="true">
+    <Position X="17.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IVarCil" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.ILabelCil" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IStringCil" Collapsed="true">
+    <Position X="16.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IDataStringCil" Collapsed="true">
+    <Position X="22.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.ITypeCil" Collapsed="true">
+    <Position X="18.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAMQAAAAAAAAAAgSAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IFunctionCil" Collapsed="true">
+    <Position X="9.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAACAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IArgCil" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.ILocalCil" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IThreeDirIns" Collapsed="true">
+    <Position X="21" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IFeuturesCil" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IAttributeCil" Collapsed="true">
+    <Position X="11.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IFunctionTypeCil" Collapsed="true">
+    <Position X="14" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CmpProject.CIL.IContextCil" Collapsed="true">
+    <Position X="21" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAEBAA=</HashCode>
+      <FileName>CIL\ICIL.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

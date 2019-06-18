@@ -99,14 +99,14 @@ namespace Cool
                     //var generateCil = new GenerateToCilOptimization(CheckSemantic, generateCilFeatures);
                     generateCil.Visit(program);
                     //Console.WriteLine(generateCil.CilAst);
-                    StreamWriter streamWriter = new StreamWriter("mips.cil");
-                    streamWriter.WriteLine(generateCil.CilAst);
-                    streamWriter.Close();
+                    // StreamWriter streamWriter = new StreamWriter("mips.cil");
+                    // streamWriter.WriteLine(generateCil.CilAst);
+                    // streamWriter.Close();
                     #endregion
                     #region CilToMIPS
                     var generateMips = new CilToMips(generateCil);
                     var mips = generateMips.Visit(program);
-                    streamWriter = new StreamWriter($"{path.Replace(".cl",".asm")}");
+                    streamWriter = new StreamWriter($"{path.Replace(".cl",".mips")}");
                     streamWriter.WriteLine(".data");
                     mips.Data.ForEach(x => streamWriter.WriteLine(x));
                     streamWriter.WriteLine(".text");

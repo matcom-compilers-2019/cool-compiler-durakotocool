@@ -1,8 +1,7 @@
-.PHONY: clean
+.PHONY: build restore clean main 
 
-main:
-	restore build run
-
+main:| clean restore build
+	
 clean:
 	dotnet clean Cool/ 
  
@@ -12,5 +11,3 @@ restore:
 build:
 	dotnet build Cool/
  
-run:
-	dotnet run -p Cool/Cool.csproj

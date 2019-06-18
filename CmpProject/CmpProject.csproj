@@ -60,7 +60,6 @@
     <Compile Include="COOLgrammarParser.cs" />
     <Compile Include="COOLgrammarVisitor.cs" />
     <Compile Include="GenerateToCil.cs" />
-    <Compile Include="GenerateToCilFeatures.cs" />
     <Compile Include="GenerateToCilTypes.cs" />
     <Compile Include="IVisitor.cs" />
     <Compile Include="MIPS.cs" />

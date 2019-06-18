@@ -45,7 +45,7 @@ namespace CmpProject
         internal IType typeC { get; set; }
         private IFunctionCil functionCil { get; set; }
         public BasicTypes basicTypes { get; set; }
-        public GenerateToCil(CheckSemanticVisitor visitor, GenerateToCilFeatures generateToCilTypes)
+        public GenerateToCil(CheckSemanticVisitor visitor, GenerateToCilTypes generateToCilTypes)
         {
             GlobalContext = visitor.globalContext;
             CilAst=generateToCilTypes.CilAst;
@@ -198,11 +198,14 @@ namespace CmpProject
             cilTree.LocalCils.Add(varType);
             cilTree.ThreeDirInses.Add(new TypeOf(varType, expr0));
             //Verifico si el tipo del objeto que le voy hacer el dispatch es void
-            var isVoid= new LocalCil($"_isVoid{cilTree.ThreeDirInses.Count}");
-            cilTree.LocalCils.Add(isVoid);
-            cilTree.ThreeDirInses.Add(new NotEqualCil(isVoid,varType, CilAst.GetTypeCilByName("void")));
-            Visit_Runtime_Error_whit_Cond(isVoid, cilTree,"\"A dispatch on void\"");
-            cilTree.ThreeDirInses.Add(new ArgExprCil(expr0));
+            if (cilTree.Name!="entry")
+            {
+                var isVoid= new LocalCil($"_isVoid{cilTree.ThreeDirInses.Count}");
+                cilTree.LocalCils.Add(isVoid);
+                cilTree.ThreeDirInses.Add(new NotEqualCil(isVoid,varType, CilAst.GetTypeCilByName("void")));
+                Visit_Runtime_Error_whit_Cond(isVoid, cilTree,$"\"line {parserRule.id.Line} column {parserRule.id.Column+1} A dispatch on void\"");
+                cilTree.ThreeDirInses.Add(new ArgExprCil(expr0));
+            }
             //cada parametro los anado al metodo puede que tenga sentido pasarlos al revez
 
             foreach (var param in Params)
@@ -238,7 +241,7 @@ namespace CmpProject
             var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(value);
             var condValue = Visit(parserRule.ifExpr,cilTree,contextCil);
-            condValue = GetValue(condValue, cilTree, CilAst.GetTypeCilByName("Bool"));
+            condValue = GetValue(condValue, cilTree, CilAst.Bool);
             var labelElse = cilTree.CreateLabel("else");
             cilTree.ThreeDirInses.Add(new IfGoto(condValue, labelElse));
             //genero el codigo de elseValue
@@ -302,20 +305,19 @@ namespace CmpProject
             var valueRight= Visit(parserRule.right, cilTree,contextCil);
             if (parserRule.left.computedType==GlobalContext.Int)
             {
-                valueLeft = GetValue(valueLeft, cilTree, CilAst.GetTypeCilByName("Int"));
-                valueRight = GetValue(valueRight, cilTree, CilAst.GetTypeCilByName("Int"));
+                valueLeft = GetValue(valueLeft, cilTree, CilAst.Int);
+                valueRight = GetValue(valueRight, cilTree, CilAst.Int);
             }
             else if(parserRule.left.computedType == GlobalContext.Bool)
             {
-                valueLeft = GetValue(valueLeft, cilTree, CilAst.GetTypeCilByName("Bool"));
-                valueRight = GetValue(valueRight, cilTree, CilAst.GetTypeCilByName("Bool"));
+                valueLeft = GetValue(valueLeft, cilTree, CilAst.Bool);
+                valueRight = GetValue(valueRight, cilTree, CilAst.Bool);
             }
             else if ( parserRule.left.computedType == GlobalContext.String)
             {
-                valueLeft = GetValue(valueLeft, cilTree, CilAst.GetTypeCilByName("String"));
-                valueRight = GetValue(valueRight, cilTree, CilAst.GetTypeCilByName("String"));
+                valueLeft = GetValue(valueLeft, cilTree, CilAst.String);
+                valueRight = GetValue(valueRight, cilTree, CilAst.String);
             }
-
             switch (parserRule.op.Text)
             {
                 case "<":
@@ -333,14 +335,14 @@ namespace CmpProject
                 default:
                     break;
             }
-            return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("Bool"),value);
+            return CreateABasicTypeWhitVal(cilTree, CilAst.Bool,value);
         }
         public IHolderCil Visit(NotExprContext parserRule, IFunctionCil cilTree, IContextCil contextCil)
         {
             var _valueNum = new LocalCil($"_valueNum{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(_valueNum);
             var valueExpr = Visit(parserRule.expresion, cilTree, contextCil);
-            var BoolCil= CilAst.GetTypeCilByName("Bool");
+            var BoolCil= CilAst.Bool;
             valueExpr = GetValue(valueExpr, cilTree, BoolCil);
             cilTree.ThreeDirInses.Add(new RestCil(_valueNum, new HolderCil("1"), valueExpr));
             return CreateABasicTypeWhitVal(cilTree,BoolCil,_valueNum);
@@ -437,10 +439,10 @@ namespace CmpProject
             switch (parserRule.@bool.Text)
             {
                 case "true":
-                    SetValue(value as IVarCil, new HolderCil("1"), cilTree, CilAst.Bool);
+                    SetValue(value , new HolderCil("1"), cilTree, CilAst.Bool);
                     break;
                 case "false":
-                    SetValue(value as IVarCil, new HolderCil("0"), cilTree, CilAst.Bool);
+                    SetValue(value , new HolderCil("0"), cilTree, CilAst.Bool);
                     break;
                 default:
                     break;
@@ -551,18 +553,12 @@ namespace CmpProject
             Visit_Runtime_Error_whit_Cond(not_is_void,cilTree, $"\"linea {parserRule.Start.Line} y columna {parserRule.Start.Column + 1} A case on void\"");
             
             //ejecucion del case
-            //var numberType=new LocalCil($"_numberType{cilTree.LocalCils.Count}");
-            //cilTree.LocalCils.Add(numberType);
             var closestAncestor = new LocalCil($"_closestAncestor{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(closestAncestor);
          
             //Inicializo el valor de numberType en 0 y closestAncestor con object 
-            //cilTree.ThreeDirInses.Add(new AssigCil(numberType, new ValuelCil("-1")));
-            //cilTree.ThreeDirInses.Add(new AssigCil(closestAncestor,new ValuelCil("Object")));
             var isNotConform= new LocalCil($"_isNotConform{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(isNotConform);
-          
-            //var typeBranch = CilAst.GetTypeCilByName(parserRule.firstBranch.typeText, typeCil);
 
             var branches = parserRule._branches.Concat(new List<BranchContext>() { parserRule.firstBranch}).OrderBy(t => -(CilAst.GetTypeCilByName(t.typeText).IndexOfPrecedence)).ToArray();
             //El tipo de la primera rama
@@ -674,8 +670,8 @@ namespace CmpProject
                     var self = GetValue(cilTree.self, cilTree, CilAst.GetTypeCilByName("String"));
                     cilTree.ThreeDirInses.Add(new LenghtCil(Length,self ));
                     //tomamos los valores de los argumentos
-                    var param1 = GetValue(cilTree.ArgCils.ElementAt(1), cilTree, CilAst.GetTypeCilByName("Int"));
-                    var param2 = GetValue(cilTree.ArgCils.ElementAt(2), cilTree, CilAst.GetTypeCilByName("Int"));
+                    var param1 = GetValue(cilTree.ArgCils.ElementAt(1), cilTree, CilAst.Int);
+                    var param2 = GetValue(cilTree.ArgCils.ElementAt(2), cilTree, CilAst.Int);
                     //
                     cilTree.ThreeDirInses.Add(new MinorCil(isParam1NotInRange,param1, Length));
                     Visit_Runtime_Error_whit_Cond(isParam1NotInRange, cilTree, $"\"Substring out of range\"");
@@ -687,7 +683,7 @@ namespace CmpProject
                     cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam2NotInRange, lastIndex, Length));
                     Visit_Runtime_Error_whit_Cond(isParam2NotInRange, cilTree, $"\"Substring out of range\"");
                     cilTree.ThreeDirInses.Add(new SubStringCil(value, self, param1,param2));
-                    return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("String"),value);
+                    return CreateABasicTypeWhitVal(cilTree, CilAst.String,value);
                 case "Object$abort":
                     cilTree.ThreeDirInses.Add(new Halt());
                     return null;
@@ -759,21 +755,21 @@ namespace CmpProject
             cilTree.ThreeDirInses.Add(new GetAttrCil(value, obj, typeCil.GetAttributeCilsByCoolName("x")));
             return value;
         }
-        public IHolderCil SetValue(IVarCil obj,IHolderCil value, IFunctionCil cilTree, ITypeCil typeCil)
+        public IVarCil SetValue(IVarCil obj,IHolderCil value, IFunctionCil cilTree, ITypeCil typeCil)
         {   
             cilTree.ThreeDirInses.Add(new SetAttrCil(obj,typeCil.GetAttributeCilsByCoolName("x"),value));
             return obj;
         }
-        public IHolderCil CreateABasicType(IFunctionCil cilTree, ITypeCil typeCil)
+        public IVarCil CreateABasicType(IFunctionCil cilTree, ITypeCil typeCil)
         {
             var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(value);
             cilTree.ThreeDirInses.Add(new Allocate(value, typeCil));
             return value;
         }
-        public IHolderCil CreateABasicTypeWhitVal( IFunctionCil cilTree, ITypeCil typeCil, IHolderCil value)
+        public IVarCil CreateABasicTypeWhitVal( IFunctionCil cilTree, ITypeCil typeCil, IHolderCil value)
         {
-            return SetValue(CreateABasicType(cilTree, typeCil) as VarCil, value, cilTree, typeCil);
+            return SetValue(CreateABasicType(cilTree, typeCil), value, cilTree, typeCil);
         }
     }
 }

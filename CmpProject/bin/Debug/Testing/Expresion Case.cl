@@ -15,10 +15,10 @@ class B inherits A
   a:Int<-4/3;
   sum(p1:Int,p2:Int):Object{ 
     case new C of 
-      a:A=>new A 
-      b:B=>new B 
-      c:X=>(let c:X<-new X in c)
-      d:D=>new D
+      a:A=>new A;
+      b:B=>new B ;
+      c:X=>(let c:X<-new X in c);
+      d:D=>new D;
     esac
   };
 };

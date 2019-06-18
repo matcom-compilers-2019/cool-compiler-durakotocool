@@ -141,7 +141,6 @@ namespace CmpProject
 					mipsResult.Functions.InsertRange(i, new List<string>() {"li $v0, 10","syscall"});
 				}
 			}
-			mipsResult.Functions.Select(x => x.StartsWith("jr") ? "" : x);
 			var functionsMIPS = (from i in functions
                           select Visitor(i, program)).ToList();
             for (int i = 0; i < functionsMIPS.Count; i++)

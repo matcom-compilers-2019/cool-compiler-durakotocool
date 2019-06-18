@@ -1,8 +1,16 @@
 .PHONY: clean
 
 main:
-	# Compiling the compiler :)
+	restore build run
 
 clean:
-	rm -rf build/*
-
+	dotnet clean Cool/ 
+ 
+restore:
+	dotnet restore Cool/
+ 
+build:
+	dotnet build Cool/
+ 
+run:
+	dotnet run -p Cool/Cool.csproj

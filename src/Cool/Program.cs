@@ -106,7 +106,7 @@ namespace Cool
                     #region CilToMIPS
                     var generateMips = new CilToMips(generateCil);
                     var mips = generateMips.Visit(program);
-                    streamWriter = new StreamWriter($"{path.Split('.')[0]}.asm");
+                    streamWriter = new StreamWriter($"{path.Replace(".cl",".asm")}");
                     streamWriter.WriteLine(".data");
                     mips.Data.ForEach(x => streamWriter.WriteLine(x));
                     streamWriter.WriteLine(".text");

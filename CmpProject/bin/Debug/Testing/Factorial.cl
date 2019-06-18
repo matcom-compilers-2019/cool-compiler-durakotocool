@@ -1,6 +1,9 @@
-class Main{
+class Main inherits IO{
     main():Int{
-        iterative(4)
+        {
+        let a:Int<-in_int() in out_int(fact(a));
+        0;
+        }
     };
     fact(i:Int):Int{
         if (i=1) then 1 else i*fact(i-1) fi

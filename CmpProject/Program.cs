@@ -44,7 +44,8 @@ namespace CmpProject
                     //var streamReader = new StreamReader("Testing/Test de Cool.cl");
                     //var streamReader = new StreamReader("Testing/Basic Types.cl");
                     //var streamReader = new StreamReader("bigexample.cl");
-                    var streamReader = new StreamReader(args[0]);
+                    var path = args[0];
+                    var streamReader = new StreamReader(path);
                     #region Lexer
                     var MyLexer = new COOLgrammarLexer(new AntlrInputStream(streamReader.ReadToEnd()));
                     MyLexer.RemoveErrorListeners();
@@ -96,7 +97,7 @@ namespace CmpProject
                     var generateCil = new GenerateToCil(CheckSemantic, generateCilTypes);
                     //var generateCil = new GenerateToCilOptimization(CheckSemantic, generateCilFeatures);
                     generateCil.Visit(program);
-                    Console.WriteLine(generateCil.CilAst);
+                    //Console.WriteLine(generateCil.CilAst);
                     StreamWriter streamWriter = new StreamWriter("mips.cil");
                     streamWriter.WriteLine(generateCil.CilAst);
                     streamWriter.Close();
@@ -104,7 +105,7 @@ namespace CmpProject
                     #region CilToMIPS
                     var generateMips = new CilToMips(generateCil);
                     var mips = generateMips.Visit(program);
-                    streamWriter = new StreamWriter("mips.asm");
+                    streamWriter = new StreamWriter($"{path.Split('.')[0]}.asm");
                     streamWriter.WriteLine(".data");
                     mips.Data.ForEach(x => streamWriter.WriteLine(x));
                     streamWriter.WriteLine(".text");

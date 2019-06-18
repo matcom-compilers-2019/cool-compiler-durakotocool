@@ -21,5 +21,5 @@ class B inherits A
 };
 class C inherits B
 {
-   select(p:Bool,a:Int,b:Int):Int{if p then a else b fi}
+   select(p:Bool,a:Int,b:Int):Int{if p then a else b fi};
 };

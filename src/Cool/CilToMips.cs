@@ -117,7 +117,7 @@ namespace CmpProject
                 mipsResult.Data.Add($"\ttype_{t.Name}_Length: .byte {t.Attributes.Count *4}");
                 foreach (var f in t.Functions)
                 {
-                    mipsResult.Data.Add($"\ttype_{t.Name}${f.CilName}: .word {f.Function.Name}");
+                    mipsResult.Data.Add($"\ttype_{t.Name}_{f.CilName}: .word {f.Function.Name}");
                 }
 				mipsResult.Data.Add($"\ttype_{t.Name}_count_methods: .word {t.Functions.Count}");
                 string parent;

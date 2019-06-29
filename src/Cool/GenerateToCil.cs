@@ -90,7 +90,7 @@ namespace CmpProject
             else
             {
                 // El nombre metodo en el tipo tiene siempre esta estructura (Type_CoolName)
-                function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}${parserRule.idText}");
+                function=CilAst.GetFunctionCilsByName($"{(parserRule.Parent as ClassContext).type.Text}_{parserRule.idText}");
                 // Como toda fucion pertenece a una clase se le agrega self como una parametro
                 var self = new ArgCil("self");
                 function.ArgCils.Add(self);
@@ -198,19 +198,21 @@ namespace CmpProject
             cilTree.LocalCils.Add(varType);
             cilTree.ThreeDirInses.Add(new TypeOf(varType, expr0));
             //Verifico si el tipo del objeto que le voy hacer el dispatch es void
+            if (parserRule.id.Text == "substr")
+                VisitString(parserRule, cilTree,new List<IHolderCil>() {expr0 }.Concat (Params).ToList());
             if (cilTree.Name!="entry")
             {
                 var isVoid= new LocalCil($"_isVoid{cilTree.ThreeDirInses.Count}");
                 cilTree.LocalCils.Add(isVoid);
                 cilTree.ThreeDirInses.Add(new NotEqualCil(isVoid,varType, CilAst.GetTypeCilByName("void")));
-                Visit_Runtime_Error_whit_Cond(isVoid, cilTree,$"\"line {parserRule.id.Line} column {parserRule.id.Column+1} A dispatch on void\"");
+                Visit_Runtime_Error_whit_Cond(isVoid, cilTree,$"\"({parserRule.id.Line},{parserRule.id.Column+1}) -  Rutime Error: A dispatch on void\"");
                 cilTree.ThreeDirInses.Add(new ArgExprCil(expr0));
             }
             //cada parametro los anado al metodo puede que tenga sentido pasarlos al revez
 
+            
             foreach (var param in Params)
                 cilTree.ThreeDirInses.Add(new ArgExprCil(param));
-
             ////nueva variable donde se almacena el valor que retorna el metodo
             var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
             cilTree.LocalCils.Add(value);
@@ -288,6 +290,7 @@ namespace CmpProject
                 var value = new LocalCil($"_value{cilTree.LocalCils.Count}");
                 cilTree.LocalCils.Add(value);
                 cilTree.ThreeDirInses.Add(new SetAttrCil(cilTree.self, typeCil.GetAttributeCilsByCoolName(parserRule.id.Text), valueExpr));
+                cilTree.ThreeDirInses.Add(new GetAttrCil(value,cilTree.self, typeCil.GetAttributeCilsByCoolName(parserRule.id.Text)));
                 return value;
             }
             else
@@ -362,7 +365,7 @@ namespace CmpProject
                     var isZero = new LocalCil($"_isZero{cilTree.LocalCils.Count}");
                     cilTree.LocalCils.Add(isZero);
                     cilTree.ThreeDirInses.Add(new NotEqualCil(isZero,valRigth,new HolderCil("0")));
-                    Visit_Runtime_Error_whit_Cond(isZero,cilTree, $"\"line {parserRule.Start.Line} column {parserRule.Start.Column+1} Division by zero\"");
+                    Visit_Runtime_Error_whit_Cond(isZero,cilTree, $"\"({parserRule.Start.Line},{parserRule.Start.Column+1}) -  Rutime Error: Division by zero\"");
                     cilTree.ThreeDirInses.Add(new DivCil(valueNum, valLeft, valRigth));
                     break;
                 case "*":
@@ -550,7 +553,7 @@ namespace CmpProject
          
             //lanzamos el error
 
-            Visit_Runtime_Error_whit_Cond(not_is_void,cilTree, $"\"linea {parserRule.Start.Line} y columna {parserRule.Start.Column + 1} A case on void\"");
+            Visit_Runtime_Error_whit_Cond(not_is_void,cilTree, $"\"({parserRule.Start.Line},{parserRule.Start.Column + 1}) -  Rutime Error: A case on void\"");
             
             //ejecucion del case
             var closestAncestor = new LocalCil($"_closestAncestor{cilTree.LocalCils.Count}");
@@ -650,65 +653,50 @@ namespace CmpProject
         {
             switch (cilTree.Name)
             {
-                case "String$lenght":
+                case "String_lenght":
                     var value= new LocalCil("value");
                     cilTree.LocalCils.Add(value);
                     cilTree.ThreeDirInses.Add(new LenghtCil(value, GetValue(cilTree.self,cilTree, CilAst.GetTypeCilByName("String"))));
                     return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("Int"),value);
-                case "String$concat":
+                case "String_concat":
                     value = new LocalCil("value");
                     cilTree.LocalCils.Add(value);
                     cilTree.ThreeDirInses.Add(new ConcatCil(value, GetValue(cilTree.self, cilTree, CilAst.GetTypeCilByName("String")), GetValue(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self"), cilTree, CilAst.GetTypeCilByName("String"))));
                     return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("String"), value);
-                case "String$substr":
-                    var Length = new LocalCil($"_length{cilTree.LocalCils.Count}");
-                    cilTree.LocalCils.Add(Length);
+                case "String_substr":
                     value = new LocalCil("value");
                     cilTree.LocalCils.Add(value);
-                    var isParam1NotInRange = new LocalCil($"_isParam1InRange{cilTree.LocalCils.Count}");
-                    cilTree.LocalCils.Add(isParam1NotInRange);
                     var self = GetValue(cilTree.self, cilTree, CilAst.GetTypeCilByName("String"));
-                    cilTree.ThreeDirInses.Add(new LenghtCil(Length,self ));
                     //tomamos los valores de los argumentos
                     var param1 = GetValue(cilTree.ArgCils.ElementAt(1), cilTree, CilAst.Int);
                     var param2 = GetValue(cilTree.ArgCils.ElementAt(2), cilTree, CilAst.Int);
-                    //
-                    cilTree.ThreeDirInses.Add(new MinorCil(isParam1NotInRange,param1, Length));
-                    Visit_Runtime_Error_whit_Cond(isParam1NotInRange, cilTree, $"\"Substring out of range\"");
-                    var lastIndex = new LocalCil($"_lastIndex{cilTree.LocalCils.Count}");
-                    cilTree.LocalCils.Add(lastIndex);
-                    cilTree.ThreeDirInses.Add(new SumCil(lastIndex, param1, param2));
-                    var isParam2NotInRange = new LocalCil($"_isParam2InRange{cilTree.LocalCils.Count}");
-                    cilTree.LocalCils.Add(isParam2NotInRange);
-                    cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam2NotInRange, lastIndex, Length));
-                    Visit_Runtime_Error_whit_Cond(isParam2NotInRange, cilTree, $"\"Substring out of range\"");
                     cilTree.ThreeDirInses.Add(new SubStringCil(value, self, param1,param2));
                     return CreateABasicTypeWhitVal(cilTree, CilAst.String,value);
-                case "Object$abort":
+                case "Object_abort":
                     cilTree.ThreeDirInses.Add(new Halt());
                     return null;
-                case "Object$type_name":
+                case "Object_type_name":
                     var x_type_name = new LocalCil("x");
                     cilTree.LocalCils.Add(x_type_name);
                     cilTree.ThreeDirInses.Add(new Type_Name(x_type_name,cilTree.self));
                     return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("String"),x_type_name);
-                case "Object$copy":
+                case "Object_copy":
                     var x_Object_copy = new LocalCil("x");
                     cilTree.LocalCils.Add(x_Object_copy);
                     cilTree.ThreeDirInses.Add(new Copy(x_Object_copy, cilTree.self));
                     return x_Object_copy;
-                case "IO$out_string":
+                case "IO_out_string":
                     cilTree.ThreeDirInses.Add(new Out_strCil(GetValue(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self"), cilTree, CilAst.GetTypeCilByName("String")))) ;
                     return cilTree.self;
-                case "IO$out_int":
+                case "IO_out_int":
                     cilTree.ThreeDirInses.Add(new Out_intCil(GetValue(cilTree.ArgCils.SingleOrDefault(t => t.Name != "self"),cilTree, CilAst.GetTypeCilByName("Int"))));
                     return cilTree.self;
-                case "IO$in_string":
+                case "IO_in_string":
                     var x_in_string = new LocalCil("x");
                     cilTree.LocalCils.Add(x_in_string);
                     cilTree.ThreeDirInses.Add(new In_strCil(x_in_string));
                     return CreateABasicTypeWhitVal(cilTree, CilAst.GetTypeCilByName("String"), x_in_string);
-                case "IO$in_int":
+                case "IO_in_int":
                     var x_in_int  = new LocalCil("x");
                     cilTree.LocalCils.Add(x_in_int);
                     cilTree.ThreeDirInses.Add(new In_intCil(x_in_int));
@@ -770,6 +758,31 @@ namespace CmpProject
         public IVarCil CreateABasicTypeWhitVal( IFunctionCil cilTree, ITypeCil typeCil, IHolderCil value)
         {
             return SetValue(CreateABasicType(cilTree, typeCil), value, cilTree, typeCil);
+        }
+        public void VisitString(DispatchContext parserRule, IFunctionCil cilTree, List<IHolderCil> Params)
+        {
+
+            var value =GetValue( Params[0],cilTree,CilAst.String);
+            var Length = new LocalCil($"_length{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(Length);
+
+            var isParam1NotInRange = new LocalCil($"_isParam1InRange{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(isParam1NotInRange);
+
+            cilTree.ThreeDirInses.Add(new LenghtCil(Length, value));
+            //tomamos los valores de los argumentos
+            var param1 = GetValue(Params[1], cilTree, CilAst.Int);
+            var param2 = GetValue(Params[2], cilTree, CilAst.Int);
+            //
+            cilTree.ThreeDirInses.Add(new MinorCil(isParam1NotInRange, param1, Length));
+            Visit_Runtime_Error_whit_Cond(isParam1NotInRange, cilTree, $"\"({parserRule.id.Line},{parserRule.id.Column+1}) - Rutime Error : Substring out of range\"");
+            var lastIndex = new LocalCil($"_lastIndex{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(lastIndex);
+            cilTree.ThreeDirInses.Add(new SumCil(lastIndex, param1, param2));
+            var isParam2NotInRange = new LocalCil($"_isParam2InRange{cilTree.LocalCils.Count}");
+            cilTree.LocalCils.Add(isParam2NotInRange);
+            cilTree.ThreeDirInses.Add(new Minor_EqualCil(isParam2NotInRange, lastIndex, Length));
+            Visit_Runtime_Error_whit_Cond(isParam2NotInRange, cilTree, $"\"({parserRule.id.Line},{parserRule.id.Column + 1}) - Rutime Error : Substring out of range\"");
         }
     }
 }

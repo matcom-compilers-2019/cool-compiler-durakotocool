@@ -100,7 +100,7 @@ namespace CmpProject
             //si al menos un tipo es undefined no se reporta error plq la expresion es null
             //Alomejor hay que especificar el nombre del metodo en el error
             if (!parserRuleContext.exprBody.computedType.Conform(typeMethod))
-                errorLogger.LogError($"El tipo {parserRuleContext.exprBody.computedType.Name} no conforma al tipo {typeMethod.Name}, linea {parserRuleContext.exprBody.Start.Line} y columna {parserRuleContext.exprBody.Start.Column+1}");
+                errorLogger.LogError($"({parserRuleContext.Start.Line},{parserRuleContext.Start.Column+1}) - Type Error : In the method {parserRuleContext.idText} of class {type.Name} the type of the method body {parserRuleContext.exprBody.computedType.Name} not conform to the declared return type {typeMethod.Name}");
         }
         public void Visit(FormalContext parserRule,IObjectContext<IVar,IVar> context)
         {
@@ -109,7 +109,7 @@ namespace CmpProject
         public void Visit(DeclarationContext parserRule,IObjectContext<IVar,IVar> context)
         {
             if (!globalContext.IfDefineType(parserRule.typeText))
-                errorLogger.LogError($"El tipo con nombre {parserRule.typeText} no ha sido encontrado en el programa, linea {parserRule.type.Line} y columna {parserRule.type.Column+1}");    
+                errorLogger.LogError($"({parserRule.type.Line},{parserRule.type.Column + 1}) - Type Error: The type {parserRule.typeText} could not be found in the program");    
             if (parserRule.expression != null)
             {
                 var TypeDec = globalContext.GetType(parserRule.typeText,type);
@@ -118,7 +118,7 @@ namespace CmpProject
                 Visit(parserRule.expression,context);
                 //Despues de visitar la expresion verifico si su tipo estatico hereda del tipo declarado
                 if (!parserRule.expression.computedType.Conform(TypeDec))
-                    errorLogger.LogError($"El tipo {parserRule.expression.computedType.Name} no conforma al tipo {parserRule.typeText}, linea {parserRule.expression.Start.Line} y columna {parserRule.expression.Start.Column+1}");
+                    errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error: The static type of the expression { parserRule.expression.computedType.Name} not conform to the declared type of the let declaration {parserRule.typeText}");
             }
             //Defino la declaracion aun si el tipo no esta definido y despues de haber entrado
             context.Define(parserRule.idText, globalContext.GetType(parserRule.typeText));
@@ -158,12 +158,6 @@ namespace CmpProject
                 case CompaExprContext rule:
                     Visit(rule,context);
                     break;
-                //case PlusRestExprContext rule:
-                //    Visit(rule,context);
-                //    break;
-                //case MultDivExprContext rule:
-                //    Visit(rule,context);
-                //    break;
                 case ArithContext rule:
                     Visit(rule, context);
                     break;
@@ -206,7 +200,7 @@ namespace CmpProject
                 parserRule.computedType = globalContext.Undefined;
             else if (!parserRule.ifExpr.computedType.Equals(globalContext.Bool))
             {
-                errorLogger.LogError($"No se puede convertir el tipo {parserRule.ifExpr.computedType.Name} en bool, linea {parserRule.ifExpr.Start.Line} y columna {parserRule.ifExpr.Start.Column+1}");
+                errorLogger.LogError($"({parserRule.ifExpr.Start.Line},{parserRule.ifExpr.Start.Column + 1}) - TypeError: The predicate of de conditionals must have static type 'Bool', not '{parserRule.ifExpr.computedType.Name}'");
                 parserRule.computedType = globalContext.Undefined;
             } 
             else//Si al menos uno es undefined entonces el tipo estatico lo sera
@@ -223,7 +217,7 @@ namespace CmpProject
                 parserRule.computedType = globalContext.Undefined;
             else if (!parserRule.whileExpr.computedType.Equals(globalContext.Bool))
             {
-                errorLogger.LogError($"No se puede convertir el tipo {parserRule.whileExpr.computedType.Name} en bool, linea {parserRule.whileExpr.Start.Line} y columna {parserRule.whileExpr.Start.Column + 1}");
+                errorLogger.LogError($"({parserRule.whileExpr.Start.Line},{parserRule.whileExpr.Start.Column + 1}) - TypeError: The predicate of the while must have static type 'Bool', not '{parserRule.whileExpr.computedType.Name}'");
                 parserRule.computedType = globalContext.Undefined;
             }
             //verifico si la expresion loopExpr es undefined
@@ -262,7 +256,7 @@ namespace CmpProject
         {
             var newContext = context.CreateChildContext();
             if (!globalContext.IfDefineType(parserRule.typeText))
-                errorLogger.LogError($"El tipo con nombre {parserRule.typeText} no ha sido encontrado en el programa, linea {parserRule.type.Line} y columna {parserRule.type.Column + 1}");
+                errorLogger.LogError($"({parserRule.type.Line},{parserRule.type.Column + 1}) - Type Error : The type {parserRule.typeText} could not be found in the program");
             newContext.Define(parserRule.idText, globalContext.GetType(parserRule.typeText));
             Visit(parserRule.expression, newContext);
             parserRule.computedType = parserRule.expression.computedType;
@@ -304,7 +298,7 @@ namespace CmpProject
         {
             if (!globalContext.IfDefineType(parserRule.type.Text))
             {
-                errorLogger.LogError($"El tipo con nombre {parserRule.type.Text} no ha sido encontrado en el programa, linea {parserRule.type.Line} y columna {parserRule.type.Column + 1}");
+                errorLogger.LogError($"({parserRule.type.Line},{parserRule.type.Column + 1}) - Type Error : The type {parserRule.type.Text} could not be found in the program");
                 parserRule.computedType = globalContext.Undefined;
             }
             else
@@ -314,7 +308,7 @@ namespace CmpProject
         {
             if (!context.IsDefineVar(parserRule.id.Text))
             {
-                errorLogger.LogError($"La variable {parserRule.id.Text} no existe en el contexto actual, linea {parserRule.id.Line} y columna {parserRule.id.Column+1}");
+                errorLogger.LogError($"({parserRule.id.Line},{parserRule.id.Column + 1}) - NameError : The variable '{parserRule.id.Text}' does not exist in the current context");
                 parserRule.computedType = globalContext.Undefined;
             }
             else
@@ -327,7 +321,7 @@ namespace CmpProject
                 //si el tipo de la expresion es Undefined no entra aqui y se le asigna despues
                 else if (!parserRule.expresion.computedType.Conform(variable))
                 {
-                    errorLogger.LogError($"El tipo {parserRule.expresion.computedType.Name} de la expresion  no conforma el tipo de la variable {variable.Name}");
+                    errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error : In the assignment the static type of the expression '{parserRule.expresion.computedType.Name}' not conform to the declared type of the identifier '{variable.Name}'");
                     parserRule.computedType = globalContext.Undefined;//Si el tipo que devuelve la expresion no conforma con el de la variable se devuelve undefined (puede que lo quite)
                 }
                 else
@@ -344,7 +338,7 @@ namespace CmpProject
             //Si es un tipo diferente a Bool lanzo una expecion
             else if (!parserRule.expresion.computedType.Equals(globalContext.Bool))
             {
-                errorLogger.LogError($"El operador 'not' no se puede aplicar a un tipo {parserRule.expresion.computedType.Name}, linea {parserRule.expresion.Start.Line} y columna {parserRule.expresion.Start.Column+1}");
+                errorLogger.LogError($"({parserRule.expresion.Start.Line},{parserRule.expresion.Start.Column + 1}) - Type Error: Operator 'not' cannot be applied to operand of type '{parserRule.expresion.computedType.Name}'");
                 parserRule.computedType = globalContext.Undefined;
             }
             //Si es bool es tipo estatico de la expresion es bool
@@ -363,7 +357,7 @@ namespace CmpProject
                 //Si al menos uno es de tipo int, bool o' string y los tipos son diferentes capturamos el error
                 if (!parserRule.right.computedType.Equals(parserRule.left.computedType) && (parserRule.left.computedType.Equals(globalContext.Int) || parserRule.left.computedType.Equals(globalContext.Bool) || parserRule.left.computedType.Equals(globalContext.String) || parserRule.right.computedType.Equals(globalContext.Int) || parserRule.right.computedType.Equals(globalContext.Bool) || parserRule.right.computedType.Equals(globalContext.String)))
                 {
-                    errorLogger.LogError($"No se puede aplicar el operador = entre el tipo {parserRule.left.computedType.Name} y el tipo {parserRule.right.computedType.Name}, linea {parserRule.Start.Line} y columna {parserRule.Start.Column+1}");
+                    errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error: Operator '{parserRule.op.Text }' cannot be applied to operands of type '{parserRule.left.computedType.Name}' and '{parserRule.right.computedType.Name}'");
                     parserRule.computedType = globalContext.Undefined;
                 }
                 else
@@ -374,14 +368,9 @@ namespace CmpProject
                 //Lo dejo como un tipo idefinido
                 if (!parserRule.left.computedType.Equals(globalContext.Int) || !parserRule.right.computedType.Equals(globalContext.Int))
                 {
-                    errorLogger.LogError($"No se puede aplicar el operador {parserRule.op.Text } entre el tipo {parserRule.left.computedType.Name} y el tipo {parserRule.right.computedType.Name} , linea {parserRule.Start.Line} y columna {parserRule.Start.Column + 1}");
+                    errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error: Operator '{parserRule.op.Text }' cannot be applied to operands of type '{parserRule.left.computedType.Name}' and '{parserRule.right.computedType.Name}'");
                     parserRule.computedType = globalContext.Undefined;
                 }
-                //else if (!parserRule.right.computedType.Equals(globalContext.Int))
-                //{
-                //    errorLogger.LogError($"No se puede {parserRule.op.Text } con un tipo {parserRule.right.computedType.Name}");
-                //    parserRule.computedType = globalContext.Undefined;
-                //}
                 else
                     parserRule.computedType = globalContext.Bool;
             }
@@ -397,14 +386,9 @@ namespace CmpProject
                 //Lo dejo como un tipo idefinido
                 if (!parserRule.left.computedType.Equals(globalContext.Int)||!parserRule.right.computedType.Equals(globalContext.Int))
                 {
-                    errorLogger.LogError($"No se puede aplicar el operador {parserRule.op.Text } entre el tipo {parserRule.left.computedType.Name} y el tipo {parserRule.right.computedType.Name} , linea {parserRule.Start.Line} y columna {parserRule.Start.Column + 1}");
+                    errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error: Operator '{parserRule.op.Text }' cannot be applied to operands of type '{parserRule.left.computedType.Name}' and '{parserRule.right.computedType.Name}'");
                     parserRule.computedType = globalContext.Undefined;
                 }
-                //else if (!parserRule.right.computedType.Equals(globalContext.Int))
-                //{
-                //    errorLogger.LogError($"No se puede {parserRule.op.Text } con un tipo {parserRule.right.computedType.Name}");
-                //    parserRule.computedType = globalContext.Undefined;
-                //}
                 else
                     parserRule.computedType = globalContext.Int;
             }
@@ -428,7 +412,7 @@ namespace CmpProject
                 //$"El operador 'not' no se puede aplicar a un tipo {parserRule.expresion.computedType.Name}, linea {parserRule.expresion.Start.Line} y columna {parserRule.expresion.Start.Column+1}"
                 if (!parserRule.expresion.computedType.Equals(globalContext.Int))
                 {
-                    errorLogger.LogError($"El operador '~' no se puede aplicar a un tipo {parserRule.expresion.computedType.Name}, linea {parserRule.expresion.Start.Line} y columna {parserRule.expresion.Start.Column + 1}");
+                    errorLogger.LogError($"({parserRule.expresion.Start.Line},{parserRule.expresion.Start.Column + 1}) - Type Error: Operator '~' cannot be applied to operand of type '{parserRule.expresion.computedType.Name}'");
                     parserRule.computedType = globalContext.Undefined;
                 }
                 else
@@ -449,7 +433,7 @@ namespace CmpProject
                 //Si el tipo estatico no esta definido entonces no se analiza ni su metodo ni si el tipo estatico de la expresion hereda des este
                 if (!globalContext.IfDefineType(parserRule.type.Text))
                 {
-                    errorLogger.LogError($"El tipo con nombre {parserRule.type.Text} no ha sido encontrado en el programa, linea {parserRule.type.Line} y columna {parserRule.type.Column + 1}");
+                    errorLogger.LogError($"({parserRule.type.Line},{parserRule.type.Column + 1}) - Type Error : The type {parserRule.type.Text} could not be found in the program");
                     parserRule.computedType = globalContext.Undefined;
                     return;
                 }
@@ -459,7 +443,7 @@ namespace CmpProject
                 
                 //verico con lo del self_type?
                 if (!typeExp0.Conform( typeFunc))
-                    errorLogger.LogError($"El tipo {parserRule.expresion.computedType.Name} no conforma al tipo {parserRule.type.Text}, linea {parserRule.expresion.Start.Line} y columna {parserRule.expresion.Start.Column + 1}");
+                    errorLogger.LogError($"({parserRule.expresion.Start.Line},{parserRule.expresion.Start.Column + 1}) - SemanticError: In the dispatch of the method '{parserRule.id.Text}' the type '{parserRule.expresion.computedType.Name}' not conform whit the static type {parserRule.type.Text}");
             }
             //Si no el tipo al cual se le va analizar el metodo es el de la expresion
             else
@@ -468,7 +452,7 @@ namespace CmpProject
             if (!typeFunc.IsDefineMethod(parserRule.id.Text))
             {
                 if(globalContext.IfDefineType(typeFunc.Name))
-                    errorLogger.LogError($"No esta definido el metodo {parserRule.id.Text} para el tipo {typeFunc.Name}, linea {parserRule.id.Line} y columna {parserRule.id.Column + 1}");
+                    errorLogger.LogError($"({parserRule.id.Line},{parserRule.id.Column + 1}) - AttributeError: The type {typeFunc.Name} does not contain a method definition named {parserRule.id.Text}");
                 parserRule.computedType = globalContext.Undefined;
             }
             else
@@ -479,13 +463,13 @@ namespace CmpProject
                 var types_expressions = (from t in parserRule._expresions select t.computedType).ToArray();
                 //Si la cantidad de expresiones que le paso al metodo es diferentes a los que realmente el metodo recibe
                 if (parserRule._expresions.Count != method.Formals.Length)
-                    errorLogger.LogError($"El metodo {parserRule.id.Text} no toma {parserRule._expresions.Count} argumentos, linea {parserRule.id.Line} y columna {parserRule.id.Column + 1}");
+                    errorLogger.LogError($"({parserRule.id.Line},{parserRule.id.Column + 1})- SemanticError: No overload for method {parserRule.id.Text} takes {parserRule._expresions.Count} arguments");
                 else
                 {
                     for (int i = 0; i < types_expressions.Length; i++)
                     {
                         if (!types_expressions[i].Conform(method.Formals[i].Type))
-                            errorLogger.LogError($"No se puede convertir un tipo {types_expressions[i].Name} en {method.Formals[i].Type.Name}, linea {parserRule._expresions[i].Start.Line} y columna {parserRule._expresions[i].Start.Column+1}");
+                            errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error : In the dispatch of the method {method.ID} the static type of the {i}th actual parameter '{types_expressions[i].Name}' not conform to the declared type of the {i}th formal parameter the type {method.Formals[i].Type.Name}");
                     }
                 }
                 parserRule.computedType = method.Type.DispatchComputedType(parserRule.expresion.computedType);
@@ -497,7 +481,7 @@ namespace CmpProject
                 Visit(expr,context);
             if (!type.IsDefineMethod(parserRule.id.Text))
             {
-                errorLogger.LogError($"No esta definido el metodo '{parserRule.id.Text}' para el tipo '{type.Name}', linea {parserRule.id.Line} y columna {parserRule.id.Column + 1}");
+                errorLogger.LogError($"({parserRule.id.Line},{parserRule.id.Column + 1}) - AttributeError: The type {type.Name} does not contain a method definition named '{parserRule.id.Text}'");
                 parserRule.computedType = globalContext.Undefined;
             }
             else
@@ -507,13 +491,13 @@ namespace CmpProject
                 //Los tipos computados los almaceno en un IEnumerable
                 var types_expresions = (from t in parserRule._expresions select t.computedType).ToArray();
                 if (parserRule._expresions.Count != method.Formals.Length)
-                    errorLogger.LogError($"El metodo '{parserRule.id.Text}' no toma {parserRule._expresions.Count} argumentos, linea {parserRule.id.Line} y columna {parserRule.id.Column + 1}");
+                    errorLogger.LogError($"({parserRule.id.Line},{parserRule.id.Column + 1})- SemanticError: No overload for method '{parserRule.id.Text}' takes {parserRule._expresions.Count} arguments");
                 else
                 {
                     for (int i = 0; i < types_expresions.Length; i++)
                     {
                         if (!types_expresions[i].Conform(method.Formals[i].Type))
-                            errorLogger.LogError($"No se puede convertir un tipo {types_expresions[i].Name} en {method.Formals[i].Type.Name}, linea {parserRule._expresions[i].Start.Line} y columna {parserRule._expresions[i].Start.Column + 1}");
+                            errorLogger.LogError($"({parserRule.Start.Line},{parserRule.Start.Column + 1}) - Type Error : In the dispatch of the method {method.ID} the static type of the {i}th actual parameter '{types_expresions[i].Name}' not conform to the declared type of the {i}th formal parameter the type {method.Formals[i].Type.Name}");
                     }
                 }
                 //es como el dispatch anterior pero la primera expresion es self
@@ -530,7 +514,7 @@ namespace CmpProject
         {
             if (!context.IsDefineVar(parserRule.id.Text))
             {
-                errorLogger.LogError($"La variable {parserRule.id.Text} no existe en el contexto actual, linea {parserRule.id.Line} y columna {parserRule.id.Column + 1}");
+                errorLogger.LogError($"({parserRule.id.Line},{parserRule.id.Column + 1}) - NameError : The variable '{parserRule.id.Text}' does not exist in the current context");
                 parserRule.computedType = globalContext.Undefined;
             }
             else

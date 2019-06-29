@@ -17,20 +17,20 @@ namespace CmpProject
         }
         public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            errorLoggers.LogError($"{e} line {line}:{charPositionInLine} {msg}");
+            errorLoggers.LogError($"({line},{charPositionInLine}) - LexicographicError {msg}");
         }
     }
-    class MyErrorListener : BaseErrorListener
+    class MyErrorListenerParser : BaseErrorListener
     {
         public ErrorLogger errorLoggers { get; private set; }
-        public MyErrorListener()
+        public MyErrorListenerParser()
         {
             errorLoggers = new ErrorLogger();
         }
       
         public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            errorLoggers.LogError($"{e} line {line}:{charPositionInLine} {msg}");
+            errorLoggers.LogError($"({line},{charPositionInLine}) - SyntaticError {msg}");
             base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         }
     }

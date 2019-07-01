@@ -17,3 +17,4 @@ full-process:
 	dotnet Cool/bin/Debug/netcoreapp2.0/Cool.dll $(CMP).cl
 	#spim -f $(CMP).mips
 	java -jar mars.jar $(CMP).mips
+

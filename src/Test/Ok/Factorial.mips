@@ -1,0 +1,1192 @@
+.data
+heap: .space 2000000
+heapPointer: .word 0
+newLine: .asciiz "\n"
+s0: .asciiz ""
+type_Object:
+	type_Object_Length: .byte 0
+	type_Object_Init: .word Object_Init
+	type_Object_abort: .word Object_abort
+	type_Object_type_name: .word Object_type_name
+	type_Object_copy: .word Object_copy
+	type_Object_count_methods: .word 4
+	type_Object_parent: .word 0
+	type_Object_name: .asciiz "Object"
+type_void:
+	type_void_Length: .byte 0
+	type_void_Init: .word void_Init
+	type_void_count_methods: .word 1
+	type_void_parent: .word 0
+	type_void_name: .asciiz "void"
+type_IO:
+	type_IO_Length: .byte 0
+	type_IO_Init: .word IO_Init
+	type_IO_abort: .word Object_abort
+	type_IO_type_name: .word Object_type_name
+	type_IO_copy: .word Object_copy
+	type_IO_out_string: .word IO_out_string
+	type_IO_out_int: .word IO_out_int
+	type_IO_in_string: .word IO_in_string
+	type_IO_in_int: .word IO_in_int
+	type_IO_count_methods: .word 8
+	type_IO_parent: .word type_Object_parent
+	type_IO_name: .asciiz "IO"
+type_String:
+	type_String_Length: .byte 4
+	type_String_Init: .word String_Init
+	type_String_abort: .word Object_abort
+	type_String_type_name: .word Object_type_name
+	type_String_copy: .word Object_copy
+	type_String_concat: .word String_concat
+	type_String_lenght: .word String_lenght
+	type_String_substr: .word String_substr
+	type_String_count_methods: .word 7
+	type_String_parent: .word type_Object_parent
+	type_String_name: .asciiz "String"
+type_Bool:
+	type_Bool_Length: .byte 4
+	type_Bool_Init: .word Bool_Init
+	type_Bool_abort: .word Object_abort
+	type_Bool_type_name: .word Object_type_name
+	type_Bool_copy: .word Object_copy
+	type_Bool_count_methods: .word 4
+	type_Bool_parent: .word type_Object_parent
+	type_Bool_name: .asciiz "Bool"
+type_Int:
+	type_Int_Length: .byte 4
+	type_Int_Init: .word Int_Init
+	type_Int_abort: .word Object_abort
+	type_Int_type_name: .word Object_type_name
+	type_Int_copy: .word Object_copy
+	type_Int_count_methods: .word 4
+	type_Int_parent: .word type_Object_parent
+	type_Int_name: .asciiz "Int"
+type_Main:
+	type_Main_Length: .byte 0
+	type_Main_Init: .word Main_Init
+	type_Main_abort: .word Object_abort
+	type_Main_type_name: .word Object_type_name
+	type_Main_copy: .word Object_copy
+	type_Main_main: .word Main_main
+	type_Main_fact: .word Main_fact
+	type_Main_iterative: .word Main_iterative
+	type_Main_count_methods: .word 7
+	type_Main_parent: .word type_Object_parent
+	type_Main_name: .asciiz "Main"
+.text
+##-----functions-----
+
+
+entry:
+sub $sp, $sp, 20
+sw $ra, 16($sp)
+li $t0, 0
+sw $t0, 12($sp)		##_value0
+sw $t0, 8($sp)		##_Type1
+sw $t0, 4($sp)		##_value2
+sw $t0, 0($sp)		##_value3
+jal Main_Init		##_value0=CALL Main_Init
+sw $v0, 12($sp)
+lw $t0, 12($sp)		##_Type1= TYPEOF _value0
+sw $t0, 8($sp)
+lw $t0, 8($sp)		##_value2=VCALL _Type1 Main_main
+lw $t0, ($t0)
+add $t0,$t0,-8
+lw $t1, ($t0)
+mul $t1,$t1,-4
+add $t0, $t0, $t1
+add $t0,$t0,16
+lw $t0,($t0)
+jalr $t0
+sw $v0, 4($sp)
+la $t0, heap		##_value3=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value3 Int_x 0
+addi $t0, $t0, 8
+li $t1, 0
+sw $t1, ($t0)
+lw $ra, 16($sp)		##return _value3
+lw $v0, 0($sp)
+addi $sp, $sp 20
+li $v0, 10
+syscall
+
+
+Object_Init:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+li $t0, 0
+sw $t0, 0($sp)		##self
+la $t0, heap		##self=ALLOCATE Object
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Object_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 0
+sw $t2, ($t0)
+addi $t1, $t1, 8
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $ra, 4($sp)		##return self
+lw $v0, 0($sp)
+addi $sp, $sp 8
+jr $ra
+
+
+void_Init:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+li $t0, 0
+sw $t0, 0($sp)		##self
+la $t0, heap		##self=ALLOCATE void
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_void_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 0
+sw $t2, ($t0)
+addi $t1, $t1, 8
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $ra, 4($sp)		##return self
+lw $v0, 0($sp)
+addi $sp, $sp 8
+jr $ra
+
+
+IO_Init:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+li $t0, 0
+sw $t0, 0($sp)		##self
+la $t0, heap		##self=ALLOCATE IO
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_IO_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 0
+sw $t2, ($t0)
+addi $t1, $t1, 8
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $ra, 4($sp)		##return self
+lw $v0, 0($sp)
+addi $sp, $sp 8
+jr $ra
+
+
+String_Init:
+sub $sp, $sp, 12
+sw $ra, 8($sp)
+li $t0, 0
+sw $t0, 4($sp)		##self
+sw $t0, 0($sp)		##_value1
+la $t0, heap		##self=ALLOCATE String
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_String_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 4($sp)
+la $t0, s0		##_value1= LOAD s0
+sw $t0, 0($sp)
+lw $t0, 4($sp)		##SETATTR self String_x _value1
+addi $t0, $t0, 8
+lw $t1, 0($sp)
+sw $t1, ($t0)
+lw $ra, 8($sp)		##return self
+lw $v0, 4($sp)
+addi $sp, $sp 12
+jr $ra
+
+
+Bool_Init:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+li $t0, 0
+sw $t0, 0($sp)		##self
+la $t0, heap		##self=ALLOCATE Bool
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Bool_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR self Bool_x 0
+addi $t0, $t0, 8
+li $t1, 0
+sw $t1, ($t0)
+lw $ra, 4($sp)		##return self
+lw $v0, 0($sp)
+addi $sp, $sp 8
+jr $ra
+
+
+Int_Init:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+li $t0, 0
+sw $t0, 0($sp)		##self
+la $t0, heap		##self=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR self Int_x 0
+addi $t0, $t0, 8
+li $t1, 0
+sw $t1, ($t0)
+lw $ra, 4($sp)		##return self
+lw $v0, 0($sp)
+addi $sp, $sp 8
+jr $ra
+
+
+Main_Init:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+li $t0, 0
+sw $t0, 0($sp)		##self
+la $t0, heap		##self=ALLOCATE Main
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Main_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 0
+sw $t2, ($t0)
+addi $t1, $t1, 8
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $ra, 4($sp)		##return self
+lw $v0, 0($sp)
+addi $sp, $sp 8
+jr $ra
+
+
+Object_abort:
+sub $sp, $sp, 8
+sw $ra, 4($sp)
+##		0($sp)	self
+li $t0, 0
+eret		##halt
+lw $ra, 4($sp)		##return
+li $v0, 0
+addi $sp, $sp 8
+jr $ra
+
+
+Object_type_name:
+sub $sp, $sp, 16
+sw $ra, 12($sp)
+##		8($sp)	self
+li $t0, 0
+sw $t0, 4($sp)		##x
+sw $t0, 0($sp)		##_value1
+lw $t0, 8($sp)		##x= type_name self
+lw $t0, ($t0)
+sw $t0, 4($sp)
+la $t0, heap		##_value1=ALLOCATE String
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_String_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value1 String_x x
+addi $t0, $t0, 8
+lw $t1, 4($sp)
+sw $t1, ($t0)
+lw $ra, 12($sp)		##return _value1
+lw $v0, 0($sp)
+addi $sp, $sp 16
+jr $ra
+
+
+Object_copy:
+sub $sp, $sp, 12
+sw $ra, 8($sp)
+##		4($sp)	self
+li $t0, 0
+sw $t0, 0($sp)		##x
+lw $t0, 4($sp)		##x= copy self
+la $t1, heap
+lw $t2, heapPointer
+add $t1, $t1, $t2
+move $v0, $t1
+lw $t2, ($t1)
+sw $t2, ($t0)
+add $t0,$t0,4
+add $t1,$t1,4
+lw $t2, ($t1)
+sw $t2, ($t0)
+move $t3, $t2
+loopCopy:
+beqz $t3,endCopy
+add $t0,$t0,4
+add $t1,$t1,4
+lw $t2, ($t1)
+sw $t2, ($t0)
+sub $t3, $t3, 1
+j loopCopy
+endCopy: 
+sw $v0, 0($sp)
+lw $ra, 8($sp)		##return x
+lw $v0, 0($sp)
+addi $sp, $sp 12
+jr $ra
+
+
+IO_out_string:
+sub $sp, $sp, 16
+sw $ra, 12($sp)
+##		8($sp)	self
+##		4($sp)	x
+li $t0, 0
+sw $t0, 0($sp)		##_value0
+lw $t0, 4($sp)		##_value0=GETATTR x String_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 0($sp)
+lw $a0, 0($sp)		##out_str _value0
+li $v0, 4
+syscall
+la $a0, newLine
+li $v0, 4
+syscall
+lw $ra, 12($sp)		##return self
+lw $v0, 8($sp)
+addi $sp, $sp 16
+jr $ra
+
+
+IO_out_int:
+sub $sp, $sp, 16
+sw $ra, 12($sp)
+##		8($sp)	self
+##		4($sp)	x
+li $t0, 0
+sw $t0, 0($sp)		##_value0
+lw $t0, 4($sp)		##_value0=GETATTR x Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 0($sp)
+lw $a0, 0($sp)		##out_int _value0
+li $v0, 1
+syscall
+la $a0, newLine
+li $v0, 4
+syscall
+lw $ra, 12($sp)		##return self
+lw $v0, 8($sp)
+addi $sp, $sp 16
+jr $ra
+
+
+IO_in_string:
+sub $sp, $sp, 16
+sw $ra, 12($sp)
+##		8($sp)	self
+li $t0, 0
+sw $t0, 4($sp)		##x
+sw $t0, 0($sp)		##_value1
+li $v0, 8		##x=in_str
+la $a0, heap
+lw $t0, heapPointer
+add $a0, $a0, $t0
+li $a1, 1025
+syscall
+rnw:
+lb $t1, heap($t0)
+beq $t1,10,endrnw
+beqz $t1,endrnw
+add $t0, $t0, 1
+j rnw
+endrnw:
+sb $zero, heap($t0)
+add $t0, $t0, 1
+sw $t0, heapPointer
+sw $a0, 4($sp)
+la $t0, heap		##_value1=ALLOCATE String
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_String_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value1 String_x x
+addi $t0, $t0, 8
+lw $t1, 4($sp)
+sw $t1, ($t0)
+lw $ra, 12($sp)		##return _value1
+lw $v0, 0($sp)
+addi $sp, $sp 16
+jr $ra
+
+
+IO_in_int:
+sub $sp, $sp, 16
+sw $ra, 12($sp)
+##		8($sp)	self
+li $t0, 0
+sw $t0, 4($sp)		##x
+sw $t0, 0($sp)		##_value1
+li $v0, 5		##x=in_int
+syscall
+sw $v0, 4($sp)
+la $t0, heap		##_value1=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value1 Int_x x
+addi $t0, $t0, 8
+lw $t1, 4($sp)
+sw $t1, ($t0)
+lw $ra, 12($sp)		##return _value1
+lw $v0, 0($sp)
+addi $sp, $sp 16
+jr $ra
+
+
+String_concat:
+sub $sp, $sp, 28
+sw $ra, 24($sp)
+##		20($sp)	self
+##		16($sp)	x
+li $t0, 0
+sw $t0, 12($sp)		##value
+sw $t0, 8($sp)		##_value1
+sw $t0, 4($sp)		##_value2
+sw $t0, 0($sp)		##_value3
+lw $t0, 20($sp)		##_value1=GETATTR self String_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 8($sp)
+lw $t0, 16($sp)		##_value2=GETATTR x String_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 4($sp)
+lw $t0, 8($sp)		##value = CONCAT _value1 _value2
+lw $t1, 4($sp)
+jal concatFunctionStart
+sw $v0, 12($sp)
+la $t0, heap		##_value3=ALLOCATE String
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_String_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value3 String_x value
+addi $t0, $t0, 8
+lw $t1, 12($sp)
+sw $t1, ($t0)
+lw $ra, 24($sp)		##return _value3
+lw $v0, 0($sp)
+addi $sp, $sp 28
+jr $ra
+
+
+String_lenght:
+sub $sp, $sp, 20
+sw $ra, 16($sp)
+##		12($sp)	self
+li $t0, 0
+sw $t0, 8($sp)		##value
+sw $t0, 4($sp)		##_value1
+sw $t0, 0($sp)		##_value2
+lw $t0, 12($sp)		##_value1=GETATTR self String_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 4($sp)
+lw $t0, 4($sp)		##value = LENGHT _value1
+jal lengthFunctionStart
+sw $v0, 8($sp)
+la $t0, heap		##_value2=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value2 Int_x value
+addi $t0, $t0, 8
+lw $t1, 8($sp)
+sw $t1, ($t0)
+lw $ra, 16($sp)		##return _value2
+lw $v0, 0($sp)
+addi $sp, $sp 20
+jr $ra
+
+
+String_substr:
+sub $sp, $sp, 36
+sw $ra, 32($sp)
+##		28($sp)	self
+##		24($sp)	i
+##		20($sp)	l
+li $t0, 0
+sw $t0, 16($sp)		##value
+sw $t0, 12($sp)		##_value1
+sw $t0, 8($sp)		##_value2
+sw $t0, 4($sp)		##_value3
+sw $t0, 0($sp)		##_value4
+lw $t0, 28($sp)		##_value1=GETATTR self String_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 12($sp)
+lw $t0, 24($sp)		##_value2=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 8($sp)
+lw $t0, 20($sp)		##_value3=GETATTR l Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 4($sp)
+lw $t0, 12($sp)		##value = SUBSTRING _value1 _value2 _value3
+lw $t1, 8($sp)
+lw $t2, 4($sp)
+jal substrFunctionStart
+sw $v0, 16($sp)
+la $t0, heap		##_value4=ALLOCATE String
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_String_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value4 String_x value
+addi $t0, $t0, 8
+lw $t1, 16($sp)
+sw $t1, ($t0)
+lw $ra, 32($sp)		##return _value4
+lw $v0, 0($sp)
+addi $sp, $sp 36
+jr $ra
+
+
+Main_main:
+sub $sp, $sp, 20
+sw $ra, 16($sp)
+##		12($sp)	self
+li $t0, 0
+sw $t0, 8($sp)		##_value0
+sw $t0, 4($sp)		##_Type2
+sw $t0, 0($sp)		##_value2
+la $t0, heap		##_value0=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 8($sp)
+lw $t0, 8($sp)		##SETATTR _value0 Int_x 4
+addi $t0, $t0, 8
+li $t1, 4
+sw $t1, ($t0)
+lw $t0, 12($sp)		##_Type2= TYPEOF self
+sw $t0, 4($sp)
+lw $t0, 12($sp)		##arg self
+sw $t0, -8($sp)
+lw $t0, 8($sp)		##arg _value0
+sw $t0, -12($sp)
+lw $t0, 4($sp)		##_value2=VCALL _Type2 Main_iterative
+lw $t0, ($t0)
+add $t0,$t0,-8
+lw $t1, ($t0)
+mul $t1,$t1,-4
+add $t0, $t0, $t1
+add $t0,$t0,24
+lw $t0,($t0)
+jalr $t0
+sw $v0, 0($sp)
+lw $ra, 16($sp)		##return _value2
+lw $v0, 0($sp)
+addi $sp, $sp 20
+jr $ra
+
+
+Main_fact:
+sub $sp, $sp, 88
+sw $ra, 84($sp)
+##		80($sp)	self
+##		76($sp)	i
+li $t0, 0
+sw $t0, 72($sp)		##_value0
+sw $t0, 68($sp)		##_value1
+sw $t0, 64($sp)		##_value2
+sw $t0, 60($sp)		##_value3
+sw $t0, 56($sp)		##_value4
+sw $t0, 52($sp)		##_value5
+sw $t0, 48($sp)		##_value6
+sw $t0, 44($sp)		##_valueNum7
+sw $t0, 40($sp)		##_valueNum8
+sw $t0, 36($sp)		##_value9
+sw $t0, 32($sp)		##_value10
+sw $t0, 28($sp)		##_value11
+sw $t0, 24($sp)		##_value12
+sw $t0, 20($sp)		##_Type16
+sw $t0, 16($sp)		##_value14
+sw $t0, 12($sp)		##_value15
+sw $t0, 8($sp)		##_value16
+sw $t0, 4($sp)		##_value17
+sw $t0, 0($sp)		##_value18
+la $t0, heap		##_value2=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 64($sp)
+lw $t0, 64($sp)		##SETATTR _value2 Int_x 1
+addi $t0, $t0, 8
+li $t1, 1
+sw $t1, ($t0)
+lw $t0, 76($sp)		##_value3=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 60($sp)
+lw $t0, 64($sp)		##_value4=GETATTR _value2 Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 56($sp)
+lw $t1, 60($sp)		##_value1=_value3==_value4
+lw $t2, 56($sp)
+seq $t0, $t1, $t2
+sw $t0, 68($sp)
+la $t0, heap		##_value5=ALLOCATE Bool
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Bool_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 52($sp)
+lw $t0, 52($sp)		##SETATTR _value5 Bool_x _value1
+addi $t0, $t0, 8
+lw $t1, 68($sp)
+sw $t1, ($t0)
+lw $t0, 52($sp)		##_value6=GETATTR _value5 Bool_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 48($sp)
+lw $t1, 48($sp)		##if _value6 goto else8_Main_fact
+beq $t1, 1, else8_Main_fact
+la $t0, heap		##_value9=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 36($sp)
+lw $t0, 36($sp)		##SETATTR _value9 Int_x 1
+addi $t0, $t0, 8
+li $t1, 1
+sw $t1, ($t0)
+lw $t0, 76($sp)		##_value10=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 32($sp)
+lw $t0, 36($sp)		##_value11=GETATTR _value9 Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 28($sp)
+lw $t1, 32($sp)		##_valueNum8=_value10-_value11
+lw $t2, 28($sp)
+sub $t0, $t1, $t2
+sw $t0, 40($sp)
+la $t0, heap		##_value12=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 24($sp)
+lw $t0, 24($sp)		##SETATTR _value12 Int_x _valueNum8
+addi $t0, $t0, 8
+lw $t1, 40($sp)
+sw $t1, ($t0)
+lw $t0, 80($sp)		##_Type16= TYPEOF self
+sw $t0, 20($sp)
+lw $t0, 80($sp)		##arg self
+sw $t0, -8($sp)
+lw $t0, 24($sp)		##arg _value12
+sw $t0, -12($sp)
+lw $t0, 20($sp)		##_value14=VCALL _Type16 Main_fact
+lw $t0, ($t0)
+add $t0,$t0,-8
+lw $t1, ($t0)
+mul $t1,$t1,-4
+add $t0, $t0, $t1
+add $t0,$t0,20
+lw $t0,($t0)
+jalr $t0
+sw $v0, 16($sp)
+lw $t0, 76($sp)		##_value15=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 12($sp)
+lw $t0, 16($sp)		##_value16=GETATTR _value14 Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 8($sp)
+lw $t1, 12($sp)		##_valueNum7=_value15*_value16
+lw $t2, 8($sp)
+mul $t0, $t1, $t2
+sw $t0, 44($sp)
+la $t0, heap		##_value17=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 4($sp)
+lw $t0, 4($sp)		##SETATTR _value17 Int_x _valueNum7
+addi $t0, $t0, 8
+lw $t1, 44($sp)
+sw $t1, ($t0)
+lw $t1, 4($sp)		##_value0=_value17
+sw $t1, 72($sp)
+j end25_Main_fact		##goto end25_Main_fact
+else8_Main_fact:		##else8_Main_fact:
+la $t0, heap		##_value18=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 0($sp)
+lw $t0, 0($sp)		##SETATTR _value18 Int_x 1
+addi $t0, $t0, 8
+li $t1, 1
+sw $t1, ($t0)
+lw $t1, 0($sp)		##_value0=_value18
+sw $t1, 72($sp)
+end25_Main_fact:		##end25_Main_fact:
+lw $ra, 84($sp)		##return _value0
+lw $v0, 72($sp)
+addi $sp, $sp 88
+jr $ra
+
+
+Main_iterative:
+sub $sp, $sp, 96
+sw $ra, 92($sp)
+##		88($sp)	self
+##		84($sp)	i
+li $t0, 0
+sw $t0, 80($sp)		##f
+sw $t0, 76($sp)		##_value1
+sw $t0, 72($sp)		##_valueNum2
+sw $t0, 68($sp)		##_value3
+sw $t0, 64($sp)		##_value4
+sw $t0, 60($sp)		##_value5
+sw $t0, 56($sp)		##_valueNum6
+sw $t0, 52($sp)		##_value7
+sw $t0, 48($sp)		##_value8
+sw $t0, 44($sp)		##_value9
+sw $t0, 40($sp)		##_value10
+sw $t0, 36($sp)		##_valueNum11
+sw $t0, 32($sp)		##_value12
+sw $t0, 28($sp)		##_value13
+sw $t0, 24($sp)		##_value14
+sw $t0, 20($sp)		##_value15
+sw $t0, 16($sp)		##_value16
+sw $t0, 12($sp)		##_value17
+sw $t0, 8($sp)		##_value18
+sw $t0, 4($sp)		##_value19
+sw $t0, 0($sp)		##_value20
+la $t0, heap		##_value1=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 76($sp)
+lw $t0, 76($sp)		##SETATTR _value1 Int_x 1
+addi $t0, $t0, 8
+li $t1, 1
+sw $t1, ($t0)
+lw $t1, 76($sp)		##f=_value1
+sw $t1, 80($sp)
+j while3_Main_iterative		##goto while3_Main_iterative
+loop4_Main_iterative:		##loop4_Main_iterative:
+lw $t0, 80($sp)		##_value3=GETATTR f Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 68($sp)
+lw $t0, 84($sp)		##_value4=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 64($sp)
+lw $t1, 68($sp)		##_valueNum2=_value3*_value4
+lw $t2, 64($sp)
+mul $t0, $t1, $t2
+sw $t0, 72($sp)
+la $t0, heap		##_value5=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 60($sp)
+lw $t0, 60($sp)		##SETATTR _value5 Int_x _valueNum2
+addi $t0, $t0, 8
+lw $t1, 72($sp)
+sw $t1, ($t0)
+lw $t1, 60($sp)		##f=_value5
+sw $t1, 80($sp)
+la $t0, heap		##_value7=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 52($sp)
+lw $t0, 52($sp)		##SETATTR _value7 Int_x 1
+addi $t0, $t0, 8
+li $t1, 1
+sw $t1, ($t0)
+lw $t0, 84($sp)		##_value8=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 48($sp)
+lw $t0, 52($sp)		##_value9=GETATTR _value7 Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 44($sp)
+lw $t1, 48($sp)		##_valueNum6=_value8-_value9
+lw $t2, 44($sp)
+sub $t0, $t1, $t2
+sw $t0, 56($sp)
+la $t0, heap		##_value10=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 40($sp)
+lw $t0, 40($sp)		##SETATTR _value10 Int_x _valueNum6
+addi $t0, $t0, 8
+lw $t1, 56($sp)
+sw $t1, ($t0)
+lw $t1, 40($sp)		##i=_value10
+sw $t1, 84($sp)
+while3_Main_iterative:		##while3_Main_iterative:
+la $t0, heap		##_value13=ALLOCATE Int
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Int_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 28($sp)
+lw $t0, 28($sp)		##SETATTR _value13 Int_x 0
+addi $t0, $t0, 8
+li $t1, 0
+sw $t1, ($t0)
+lw $t0, 84($sp)		##_value14=GETATTR i Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 24($sp)
+lw $t0, 28($sp)		##_value15=GETATTR _value13 Int_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 20($sp)
+lw $t1, 24($sp)		##_value12=_value14==_value15
+lw $t2, 20($sp)
+seq $t0, $t1, $t2
+sw $t0, 32($sp)
+la $t0, heap		##_value16=ALLOCATE Bool
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Bool_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 16($sp)
+lw $t0, 16($sp)		##SETATTR _value16 Bool_x _value12
+addi $t0, $t0, 8
+lw $t1, 32($sp)
+sw $t1, ($t0)
+lw $t0, 16($sp)		##_value17=GETATTR _value16 Bool_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 12($sp)
+li $t1, 1		##_valueNum11=1-_value17
+lw $t2, 12($sp)
+sub $t0, $t1, $t2
+sw $t0, 36($sp)
+la $t0, heap		##_value18=ALLOCATE Bool
+lw $t1, heapPointer
+add $t0, $t0, $t1
+move $v0, $t0
+la $t2, type_Bool_name
+sw $t2, ($t0)
+add $t0, $t0, 4
+li $t2, 1
+sw $t2, ($t0)
+addi $t1, $t1, 12
+sw $t1, heapPointer
+sw $v0, 8($sp)
+lw $t0, 8($sp)		##SETATTR _value18 Bool_x _valueNum11
+addi $t0, $t0, 8
+lw $t1, 36($sp)
+sw $t1, ($t0)
+lw $t0, 8($sp)		##_value19=GETATTR _value18 Bool_x
+addi $t0, $t0, 8
+lw $t0, ($t0)
+sw $t0, 4($sp)
+lw $t1, 4($sp)		##if _value19 goto loop4_Main_iterative
+beq $t1, 1, loop4_Main_iterative
+jal void_Init		##_value20=CALL void_Init
+sw $v0, 0($sp)
+lw $ra, 92($sp)		##return f
+lw $v0, 80($sp)
+addi $sp, $sp 96
+jr $ra
+
+
+equalFunctionStart:
+beqz $a0, equalCheckZero
+bnez $a1, loop_StrComp
+li $v0, 0
+jr $ra
+loop_StrComp:
+lb $t0, ($a0)
+lb $t1, ($a1)
+bne $t0,$t1, strComp_false
+beqz $t0, strComp_true
+addi $a0,$a0,1
+addi $a1,$a1,1
+j loop_StrComp
+strComp_true:
+li $v0, 1
+jr $ra
+strComp_false:
+li $v0, 0
+jr $ra
+equalCheckZero:
+seq $v0, $a1, 0
+jr $ra
+
+
+conformFunctionStart:
+move $v1,$ra
+ll_loop:
+move $a2, $a1
+addi $a1, $a1, 4
+jal equalFunctionStart
+move $a1, $a2
+bnez  $v0, ll_true
+lw $a1,($a1)
+beqz $a1, ll_false
+j ll_loop
+ll_true:
+li $v0, 0
+jr $v1
+ll_false:
+li $v0, 1
+jr $v1
+
+
+lengthFunctionStart:
+li $v0, 0
+lengthLoad:
+lb $t1, ($t0)
+beqz $t1, lengthReturn
+add $t0, $t0, 1
+add $v0, $v0, 1
+j lengthLoad
+lengthReturn:
+jr $ra
+
+
+concatFunctionStart:
+la $t3, heap
+lw $t4, heapPointer
+lw $t5, heapPointer
+add $t4, $t4, $t3
+move $v0, $t4
+concatFunctionFirst:
+lb $a0, ($t0)
+beqz $a0, concatFunctionSecond
+sb $a0, ($t4)
+addi $t4, $t4, 1
+addi $t5, $t5, 1
+addi $t0, $t0, 1
+j concatFunctionFirst
+concatFunctionSecond:
+lb $a0, ($t1)
+beqz $a0, concatFunctionEnd
+sb $a0, ($t4)
+addi $t4, $t4, 1
+addi $t5, $t5, 1
+addi $t1, $t1, 1
+j concatFunctionSecond
+concatFunctionEnd:
+sb $zero, ($t4)
+addi $t5, $t5, 1
+rem $t6, $t5, 4
+neg $t6, $t6
+add $t6, $t6, 4
+add $t5, $t5, $t6
+sb $t5, heapPointer
+jr $ra
+substrFunctionStart:
+la $t3, heap
+lw $t4, heapPointer
+lw $t5, heapPointer
+add $t4, $t4, $t3
+move $v0, $t4
+add $t0, $t0, $t1
+move $v0, $t4
+substrFunctionLoop:
+lb $a0, 0($t0)
+beqz $t2, substrFunctionFin  #llego al final del substr
+addi $t2, $t2, -1
+beqz $a0, substrFunctionFin 	# encontro el fin del str
+sb $a0,  0($t4)
+addi $t4, $t4, 1
+addi $t5, $t5, 1
+addi $t0, $t0, 1
+j substrFunctionLoop
+substrFunctionFin:
+sb $zero, ($t4)
+addi $t5, $t5, 1
+rem $t6, $t5, 4
+neg $t6, $t6
+add $t6, $t6, 4
+add $t5, $t5, $t6
+sb $t5, heapPointer
+# lw $ra, ($sp)
+jr $ra

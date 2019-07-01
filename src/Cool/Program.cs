@@ -64,7 +64,7 @@ namespace Cool
                     #region Parser
                     var MyParser = new COOLgrammarParser(tokens);
                     MyParser.RemoveErrorListeners();
-                    var myErrors = new MyErrorListener();
+                    var myErrors = new MyErrorListenerParser();
                     MyParser.AddErrorListener(myErrors);
                     var program = MyParser.program();
                     //Si hay errores para la ejecucion del programa
@@ -98,7 +98,7 @@ namespace Cool
                     var generateCil = new GenerateToCil(CheckSemantic, generateCilTypes);
                     //var generateCil = new GenerateToCilOptimization(CheckSemantic, generateCilFeatures);
                     generateCil.Visit(program);
-                    //Console.WriteLine(generateCil.CilAst);
+                    // Console.WriteLine(generateCil.CilAst);
                     // StreamWriter streamWriter = new StreamWriter("mips.cil");
                     // streamWriter.WriteLine(generateCil.CilAst);
                     // streamWriter.Close();
@@ -106,7 +106,7 @@ namespace Cool
                     #region CilToMIPS
                     var generateMips = new CilToMips(generateCil);
                     var mips = generateMips.Visit(program);
-                    StreamWriter streamWriter = new StreamWriter($"{path.Replace(".cl",".mips")}");
+                    var streamWriter = new StreamWriter($"{path.Replace(".cl",".mips")}");
                     streamWriter.WriteLine(".data");
                     mips.Data.ForEach(x => streamWriter.WriteLine(x));
                     streamWriter.WriteLine(".text");

@@ -143,3 +143,12 @@ $ ./coolc.sh <input_file.cl>
 ```
 
 El cual genera el un `<nombre>.asm` listo para correr en spim ;)
+
+
+Para los test
+
+```bash
+$ cd src
+$ ./test.sh ruta/a/la/carpeta/test/
+```
+

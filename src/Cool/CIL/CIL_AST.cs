@@ -51,7 +51,7 @@ namespace CmpProject.CIL
         public ITypeCil Bool => GetTypeCilByName("Bool");
         public ITypeCil String => GetTypeCilByName("String");
         public ITypeCil Int => GetTypeCilByName("Int");
-        public IFunctionCil void_init => FunctionCils.Single(t => t.Name == "void$Init");
+        public IFunctionCil void_init => FunctionCils.Single(t => t.Name == "void_Init");
 
         public CilAst()
         {
@@ -85,7 +85,7 @@ namespace CmpProject.CIL
 
         public IFunctionCil CreateFunctionCil(string Name, string CilName)
         {
-            var result = GetFunctionCilsByName($"{Name}${CilName}") ?? new FunctionCil(Name, CilName);
+            var result = GetFunctionCilsByName($"{Name}_{CilName}") ?? new FunctionCil(Name, CilName);
             FunctionCils.Add(result);
             return result;
         }
@@ -219,7 +219,7 @@ namespace CmpProject.CIL
     {
         public string CilName { get; set; }
         //Si TypeName es igual true o pertenece a ninguna clase
-        public FeuturesCil(string TypeName,string CilName):base((TypeName == null)?CilName:$"{TypeName}${CilName}")
+        public FeuturesCil(string TypeName,string CilName):base((TypeName == null)?CilName:$"{TypeName}_{CilName}")
         {
             this.CilName = CilName;
         }

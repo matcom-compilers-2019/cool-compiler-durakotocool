@@ -214,7 +214,7 @@ namespace CmpProject
         {
             if (a is SelfType selfType)
             {
-                //Puede que haya que tomar en cuenta otra cosa aqui
+             
                 return selfType.type == type;
             }
             else
